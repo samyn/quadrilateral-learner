@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四邊形動畫學習器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🔷 四邊形探索樂園 🔷</h1>
+        <p>發現各種四邊形的奇妙特性和它們之間的關係！</p>
+    </div>
+
+    <div class="controls">
+        <button class="shape-btn active" data-shape="square">正方形</button>
+        <button class="shape-btn" data-shape="rectangle">長方形</button>
+        <button class="shape-btn" data-shape="rhombus">菱形</button>
+        <button class="shape-btn" data-shape="parallelogram">平行四邊形</button>
+        <button class="shape-btn" data-shape="trapezoid">梯形</button>
+    </div>
+
+    <div class="animation-container">
+        <div class="shape-display">
+            <div class="shape-area">
+                <svg id="shape-svg" width="250" height="250" viewBox="0 0 250 250">
+                    <polygon id="main-shape" points="" fill="#4CAF50" stroke="#333" stroke-width="3"/>
+                    
+                    <!-- 平行線標記 -->
+                    <g id="parallel-marks" class="visual-element">
+                        <g class="parallel-mark" data-type="parallel">
+                            <line id="parallel1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="parallel1b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="parallel2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="parallel2b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <!-- 直角標記 -->
+                    <g id="angle-marks" class="visual-element">
+                        <g class="angle-mark" data-type="right-angle">
+                            <rect id="angle1" x="0" y="0" width="15" height="15" />
+                            <rect id="angle2" x="0" y="0" width="15" height="15" />
+                            <rect id="angle3" x="0" y="0" width="15" height="15" />
+                            <rect id="angle4" x="0" y="0" width="15" height="15" />
+                        </g>
+                    </g>
+                    
+                    <!-- 非直角標記（菱形、平行四邊形用） -->
+                    <g id="angle-marks-general" class="visual-element">
+                        <g class="general-angle-mark" data-type="general-angle">
+                            <circle id="angle-dot1" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="angle-dot2" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="angle-dot3" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="angle-dot4" cx="0" cy="0" r="0" fill="#FF9800" />
+                        </g>
+                    </g>
+                    
+                    <!-- 相等邊標記 -->
+                    <g id="equal-marks" class="visual-element">
+                        <g class="equal-mark" data-type="equal">
+                            <line id="equal1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal1b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal2b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal3a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal3b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal4a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="equal4b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <!-- 梯形兩腰標記 -->
+                    <g id="sides-marks" class="visual-element">
+                        <g class="equal-mark" data-type="equal-sides">
+                            <line id="side1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="side2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="side2b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <!-- 對角線 -->
+                    <g id="diagonal-marks" class="visual-element">
+                        <g class="diagonal-line" data-type="diagonal">
+                            <line id="diagonal1" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="diagonal2" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                </svg>
+                
+                <!-- 动画按钮 -->
+                <button id="animate-transformation-btn" class="animate-transformation-btn" style="display:none;">
+                    🎬 觀看變換動畫
+                </button>
+                
+                <!-- 进度条 -->
+                <div class="transformation-progress" style="display:none;">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="properties-panel">
+                <h3 id="shape-title">正方形</h3>
+                <div id="properties-list">
+                    <!-- Properties will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="relationship-network">
+            <h3>🔗 四邊形變換</h3>
+            
+            <!-- 变换信息提示框 -->
+            <div class="relationship-info hidden">
+                <h4 id="relationship-text">💡 點擊一個形狀作為起點，再點擊另一個形狀查看變換方式</h4>
+            </div>
+            
+            <div class="network-container">
+                <!-- 形狀節點 -->
+                <div class="shape-node trapezoid" data-shape="trapezoid">梯形</div>
+                <div class="shape-node parallelogram" data-shape="parallelogram"><span>平行四邊形</span></div>
+                <div class="shape-node rectangle" data-shape="rectangle">長方形</div>
+                <div class="shape-node rhombus" data-shape="rhombus"><span>菱形</span></div>
+                <div class="shape-node square" data-shape="square">正方形</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
