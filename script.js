@@ -633,6 +633,212 @@ function displayShape(shapeName) {
 }
 
 /**
+ * 显示形状对比
+ * @param {string} sourceShape - 源形状
+ * @param {string} targetShape - 目标形状
+ */
+function displayShapeComparison(sourceShape, targetShape) {
+    const title = document.getElementById('shape-title');
+    const propertiesList = document.getElementById('properties-list');
+    
+    // 更新标题显示变换关系
+    title.innerHTML = `
+        <span style="color: #FF6B6B;">${shapes[sourceShape].title}</span> 
+        <span style="color: #666; font-size: 0.8em;">→</span> 
+        <span style="color: #4CAF50;">${shapes[targetShape].title}</span>
+    `;
+    
+    clearVisualHighlights();
+    
+    // 创建对比内容
+    propertiesList.innerHTML = '';
+    
+    // 添加变换说明
+    const transformationDiv = document.createElement('div');
+    transformationDiv.className = 'transformation-summary';
+    transformationDiv.style.cssText = `
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border: 2px solid #4CAF50;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: bold;
+        color: #2e7d32;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    `;
+    
+    const transformKey = `${sourceShape}-${targetShape}`;
+    const transformDesc = transformationPaths[transformKey] || '變換完成';
+    transformationDiv.innerHTML = `
+        <div style="font-size: 14px; margin-bottom: 5px;">🎯 變換關鍵</div>
+        <div style="font-size: 16px;">${transformDesc}</div>
+    `;
+    propertiesList.appendChild(transformationDiv);
+    
+    // 比较特性
+    const sourceProps = shapes[sourceShape].properties;
+    const targetProps = shapes[targetShape].properties;
+    
+    // 创建对比标题
+    const comparisonTitle = document.createElement('div');
+    comparisonTitle.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0 15px 0;
+        font-weight: bold;
+        font-size: 16px;
+    `;
+    comparisonTitle.innerHTML = `
+        <span style="color: #FF6B6B; flex: 1; text-align: center;">變換前</span>
+        <span style="color: #666; flex: 0 0 40px; text-align: center;">vs</span>
+        <span style="color: #4CAF50; flex: 1; text-align: center;">變換後</span>
+    `;
+    propertiesList.appendChild(comparisonTitle);
+    
+    // 收集所有可能的特性类型
+    const allPropertyTypes = new Set();
+    sourceProps.forEach(prop => allPropertyTypes.add(prop.text));
+    targetProps.forEach(prop => allPropertyTypes.add(prop.text));
+    
+    // 为每种特性创建对比行
+    Array.from(allPropertyTypes).forEach((propText, index) => {
+        setTimeout(() => {
+            const sourceProp = sourceProps.find(p => p.text === propText);
+            const targetProp = targetProps.find(p => p.text === propText);
+            
+            const comparisonRow = document.createElement('div');
+            comparisonRow.className = 'property-comparison';
+            comparisonRow.style.cssText = `
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                background: white;
+                border-radius: 8px;
+                padding: 10px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideUp 0.5s ease forwards;
+                animation-delay: ${index * 0.1}s;
+            `;
+            
+            // 添加CSS动画样式
+            if (!document.getElementById('comparison-animations')) {
+                const style = document.createElement('style');
+                style.id = 'comparison-animations';
+                style.textContent = `
+                    @keyframes slideUp {
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            const sourceContent = sourceProp ? `
+                <div class="property-icon ${sourceProp.icon}" style="width: 16px; height: 16px; margin-right: 8px;"></div>
+                <span style="font-size: 13px;">${sourceProp.text}</span>
+            ` : `
+                <span style="color: #ccc; font-size: 13px;">❌ 無此特性</span>
+            `;
+            
+            const targetContent = targetProp ? `
+                <div class="property-icon ${targetProp.icon}" style="width: 16px; height: 16px; margin-right: 8px;"></div>
+                <span style="font-size: 13px;">${targetProp.text}</span>
+            ` : `
+                <span style="color: #ccc; font-size: 13px;">❌ 無此特性</span>
+            `;
+            
+            // 判断变化状态
+            let changeIndicator = '';
+            let changeColor = '#666';
+            if (!sourceProp && targetProp) {
+                changeIndicator = '➕';
+                changeColor = '#4CAF50';
+            } else if (sourceProp && !targetProp) {
+                changeIndicator = '➖';
+                changeColor = '#FF6B6B';
+            } else if (sourceProp && targetProp && sourceProp.text === targetProp.text) {
+                changeIndicator = '✓';
+                changeColor = '#666';
+            } else if (sourceProp && targetProp && sourceProp.text !== targetProp.text) {
+                changeIndicator = '🔄';
+                changeColor = '#FF9800';
+            }
+            
+            comparisonRow.innerHTML = `
+                <div style="flex: 1; display: flex; align-items: center; color: ${sourceProp ? '#333' : '#999'};">
+                    ${sourceContent}
+                </div>
+                <div style="flex: 0 0 40px; text-align: center; color: ${changeColor}; font-size: 18px;">
+                    ${changeIndicator}
+                </div>
+                <div style="flex: 1; display: flex; align-items: center; color: ${targetProp ? '#333' : '#999'};">
+                    ${targetContent}
+                </div>
+            `;
+            
+            // 添加点击高亮功能
+            comparisonRow.addEventListener('click', () => {
+                document.querySelectorAll('.property-comparison').forEach(row => {
+                    row.style.background = 'white';
+                    row.style.transform = 'scale(1)';
+                });
+                
+                comparisonRow.style.background = '#f0f8ff';
+                comparisonRow.style.transform = 'scale(1.02)';
+                
+                // 高亮对应的视觉元素
+                if (targetProp && targetProp.visual) {
+                    highlightVisualElement(targetProp.visual);
+                }
+            });
+            
+            propertiesList.appendChild(comparisonRow);
+        }, index * 100);
+    });
+    
+    // 添加返回按钮
+    setTimeout(() => {
+        const backButton = document.createElement('button');
+        backButton.textContent = '📚 返回形状详情';
+        backButton.style.cssText = `
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        `;
+        
+        backButton.addEventListener('mouseenter', () => {
+            backButton.style.transform = 'translateY(-2px)';
+            backButton.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        });
+        
+        backButton.addEventListener('mouseleave', () => {
+            backButton.style.transform = 'translateY(0)';
+            backButton.style.boxShadow = 'none';
+        });
+        
+        backButton.addEventListener('click', () => {
+            displayShape(targetShape);
+        });
+        
+        propertiesList.appendChild(backButton);
+    }, (Array.from(allPropertyTypes).length * 100) + 200);
+}
+
+/**
  * 动画变换函数
  * @param {string} sourceShape - 源形状
  * @param {string} targetShape - 目标形状
@@ -716,8 +922,8 @@ function animateTransformation(sourceShape, targetShape) {
             // 更新到目标形状
             updateVisualMarkers(targetShape);
             
-            // 更新形状信息
-            displayShape(targetShape);
+            // 显示形状对比而不是单独的形状信息
+            displayShapeComparison(sourceShape, targetShape);
             updateActiveShape(targetShape);
             
             // 恢复按钮状态
@@ -862,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!e.target.closest('.shape-node') && 
             !e.target.closest('.relationship-info') &&
             !e.target.closest('.property') &&
+            !e.target.closest('.property-comparison') &&
             !e.target.closest('#animate-transformation-btn') &&
             !e.target.closest('.transformation-progress')) {
             
@@ -872,6 +1079,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.property').forEach(p => {
                 p.classList.remove('highlight');
             });
+            
+            document.querySelectorAll('.property-comparison').forEach(row => {
+                row.style.background = 'white';
+                row.style.transform = 'scale(1)';
+            });
+            
             clearVisualHighlights();
         }
     });
