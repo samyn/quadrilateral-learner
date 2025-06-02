@@ -831,6 +831,8 @@ function displayShapeComparison(sourceShape, targetShape) {
         });
         
         backButton.addEventListener('click', () => {
+            // 修复：返回形状详情时重置选择状态
+            resetShapeSelection();
             displayShape(targetShape);
         });
         
@@ -1047,6 +1049,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 形状按钮事件监听
     document.querySelectorAll('.shape-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            // 修复：在切换形状时重置选择状态
+            resetShapeSelection();
             updateActiveShape(btn.dataset.shape);
             displayShape(btn.dataset.shape);
         });
