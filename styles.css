@@ -547,6 +547,30 @@ body {
     font-weight: bold;
 }
 
+/* 特殊處理：長方形和菱形hover時的效果 */
+#relationship-svg rect[data-shape="rectangle"],
+#relationship-svg rect[data-shape="rhombus"] {
+    transition: all 0.3s ease;
+}
+
+#relationship-svg rect[data-shape="rectangle"]:hover,
+#relationship-svg rect[data-shape="rhombus"]:hover {
+    stroke-width: 3;
+    filter: brightness(1.2) drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transform: scale(1.05);
+}
+
+/* 正方形的特殊處理 */
+#relationship-svg rect[data-shape="square"] {
+    transition: all 0.3s ease;
+}
+
+/* 當正方形被遮擋時的樣式類 */
+#relationship-svg rect[data-shape="square"].dimmed {
+    opacity: 0.3;
+    transform: scale(0.95);
+}
+
 /* 挑战界面样式 */
 .challenge-container, .challenge-result-container {
     background: white;

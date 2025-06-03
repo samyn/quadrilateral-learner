@@ -2456,7 +2456,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 关系图中图形区域的点击事件
-    document.querySelectorAll('#relationship-svg rect[data-shape]').forEach(rect => {
+   document.querySelectorAll('#relationship-svg rect[data-shape]').forEach(rect => {
         rect.addEventListener('click', (e) => {
             e.stopPropagation();
             const shapeName = rect.getAttribute('data-shape');
@@ -2467,7 +2467,32 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
     });
+    // 添加hover效果處理，讓長方形和菱形在hover時能完整顯示
+    const rectangleRect = document.querySelector('#relationship-svg rect[data-shape="rectangle"]');
+    const rhombusRect = document.querySelector('#relationship-svg rect[data-shape="rhombus"]');
+    const squareRect = document.querySelector('#relationship-svg rect[data-shape="square"]');
 
+    // 長方形hover效果
+    if (rectangleRect && squareRect) {
+        rectangleRect.addEventListener('mouseenter', () => {
+            squareRect.classList.add('dimmed');
+        });
+        
+        rectangleRect.addEventListener('mouseleave', () => {
+            squareRect.classList.remove('dimmed');
+        });
+    }
+
+    // 菱形hover效果
+    if (rhombusRect && squareRect) {
+        rhombusRect.addEventListener('mouseenter', () => {
+            squareRect.classList.add('dimmed');
+        });
+        
+        rhombusRect.addEventListener('mouseleave', () => {
+            squareRect.classList.remove('dimmed');
+        });
+    }
     // 关系图中可点击文本的事件
     document.querySelectorAll('#relationship-svg text[style*="cursor: pointer"]').forEach(text => {
         text.addEventListener('click', (e) => {
