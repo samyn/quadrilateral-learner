@@ -10,35 +10,6 @@
 - 📊 **實時進度顯示**：動畫過程中的進度條反饋
 - 💡 **智能提示系統**：引導式的變換路徑說明
 
-## 項目結構
-
-```
-quadrilateral-learner/
-├── index.html          # 主頁面結構
-├── styles.css          # 樣式表
-├── script.js           # JavaScript 邏輯
-└── README.md           # 項目說明
-```
-
-## 文件說明
-
-### `index.html`
-- 包含完整的 HTML 結構
-- SVG 圖形和幾何標記元素
-- 形狀選擇按鈕和控制面板
-
-### `styles.css` 
-- 響應式設計樣式
-- 動畫效果和過渡
-- 形狀節點的視覺設計
-- 移動端適配
-
-### `script.js`
-- 四邊形數據和屬性定義
-- 動態 SVG 標記更新邏輯
-- 變換動畫引擎
-- 用戶交互處理
-
 ## 使用方法
 
 1. **查看形狀屬性**
@@ -57,7 +28,6 @@ quadrilateral-learner/
 ## 技術特點
 
 - **純前端實現**：無需服務器，可直接在瀏覽器中運行
-- **模組化設計**：HTML、CSS、JavaScript 分離，便於維護
 - **動畫優化**：使用 requestAnimationFrame 實現流暢動畫
 - **響應式布局**：適配不同屏幕尺寸
 
@@ -95,23 +65,9 @@ quadrilateral-learner/
 
 ## 開發說明
 
-### 添加新形狀
-在 `script.js` 的 `shapes` 對象中添加新的形狀定義：
+此項目採用 claude.ai 生成
 
-```javascript
-newShape: {
-    points: "x1,y1 x2,y2 x3,y3 x4,y4",
-    title: "新形狀",
-    properties: [...],
-    visualElements: {...}
-}
-```
 
-### 自定義動畫
-修改 `animateTransformation` 函數中的動畫參數：
-- `duration`: 動畫持續時間
-- `steps`: 動畫幀數
-- 插值算法：線性插值或其他緩動函數
 
 ## 授權
 

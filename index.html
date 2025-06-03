@@ -73,6 +73,29 @@
             color: #333;
         }
 
+        /* 关系图按钮样式 */
+        .relationship-diagram-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .relationship-diagram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .relationship-diagram-btn.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
         /* 主要动画容器 */
         .animation-container {
             background: white;
@@ -488,6 +511,41 @@
             }
         }
 
+        /* 关系图样式 */
+        #relationship-svg {
+            max-width: 100%;
+            height: auto;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #relationship-svg rect[data-shape] {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #relationship-svg rect[data-shape]:hover {
+            stroke-width: 4;
+            filter: brightness(1.1);
+            transform: scale(1.02);
+            transform-origin: center;
+        }
+
+        #relationship-svg text {
+            cursor: default;
+            user-select: none;
+        }
+
+        #relationship-svg text[style*="cursor: pointer"] {
+            cursor: pointer;
+        }
+
+        #relationship-svg text[style*="cursor: pointer"]:hover {
+            fill: #333 !important;
+            font-weight: bold;
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .shape-display {
@@ -520,6 +578,37 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            /* 关系图响应式调整 */
+            #relationship-svg {
+                width: 100%;
+                height: 350px;
+            }
+            
+            #relationship-svg text {
+                font-size: 8px !important;
+            }
+            
+            #relationship-svg .explanation-text {
+                font-size: 6px !important;
+            }
+            
+            /* 隐藏移动端上过小的文本 */
+            #relationship-svg text[font-size="10"],
+            #relationship-svg text[font-size="11"] {
+                display: none;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .relationship-diagram-btn {
+                order: -1; /* 在移动端将关系图按钮放到最前面 */
+                font-size: 14px;
+                padding: 10px 16px;
+            }
         }
     </style>
 </head>
@@ -535,12 +624,14 @@
         <button class="shape-btn" data-shape="rhombus">菱形</button>
         <button class="shape-btn" data-shape="parallelogram">平行四邊形</button>
         <button class="shape-btn" data-shape="trapezoid">梯形</button>
+        <button class="relationship-diagram-btn" id="relationship-diagram-btn">📊 圖形關係圖</button>
     </div>
 
     <div class="animation-container">
         <div class="shape-display">
             <div class="shape-area">
-                <svg id="shape-svg" width="250" height="250" viewBox="0 0 250 250">
+                <!-- 形状显示SVG -->
+                <svg id="shape-svg" width="250" height="250" viewBox="0 0 250 250" style="display: block;">
                     <polygon id="main-shape" points="" fill="#4CAF50" stroke="#333" stroke-width="3"/>
                     
                     <!-- 平行線標記 -->
@@ -602,6 +693,114 @@
                             <line id="diagonal1" x1="0" y1="0" x2="0" y2="0" />
                             <line id="diagonal2" x1="0" y1="0" x2="0" y2="0" />
                         </g>
+                    </g>
+                </svg>
+
+                <!-- 关系图SVG -->
+                <svg id="relationship-svg" width="700" height="450" viewBox="0 0 700 450" style="display: none;">
+                    <!-- 定义渐变 -->
+                    <defs>
+                        <linearGradient id="generalQuadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="irregularQuadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#ffcc80;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="trapezoidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#ce93d8;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="generalTrapezoidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:0.4" />
+                        </linearGradient>
+                        <linearGradient id="parallelogramGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff8e1;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#ffecb3;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="generalParallelogramGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff8e1;stop-opacity:0.6" />
+                            <stop offset="100%" style="stop-color:#fff3c4;stop-opacity:0.4" />
+                        </linearGradient>
+                        <linearGradient id="rectangleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="rhombusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fce4ec;stop-opacity:0.9" />
+                            <stop offset="100%" style="stop-color:#f8bbd9;stop-opacity:0.7" />
+                        </linearGradient>
+                        <linearGradient id="squareGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff9c4;stop-opacity:0.95" />
+                            <stop offset="100%" style="stop-color:#ffd54f;stop-opacity:0.8" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- 一般四边形（最外层大长方形） -->
+                    <rect x="50" y="50" width="600" height="320" fill="url(#generalQuadGrad)" stroke="#1976d2" stroke-width="3" rx="8"/>
+                    <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#1976d2">一般四邊形</text>
+                    
+                    <!-- 分割线：分离不规则四边形和梯形 -->
+                    <line x1="250" y1="50" x2="250" y2="370" stroke="#1976d2" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <!-- 不规则四边形区域 -->
+                    <rect x="60" y="60" width="180" height="300" fill="url(#irregularQuadGrad)" stroke="#f57c00" stroke-width="2" rx="5"/>
+                    <text x="150" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00">不規則四邊形</text>
+                    <text x="150" y="210" text-anchor="middle" font-size="12" fill="#e65100">（無特殊規律的四邊形）</text>
+                    
+                    <!-- 梯形区域 -->
+                    <rect x="260" y="60" width="380" height="300" fill="url(#trapezoidGrad)" stroke="#7b1fa2" stroke-width="2" rx="5"/>
+                    <text x="450" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="#7b1fa2">梯形</text>
+                    
+                    <!-- 梯形内部分割线：分离一般梯形和平行四边形 -->
+                    <line x1="260" y1="180" x2="640" y2="180" stroke="#7b1fa2" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <!-- 一般梯形区域（只有一组对边平行） -->
+                    <rect x="270" y="70" width="360" height="100" fill="url(#generalTrapezoidGrad)" stroke="#8e24aa" stroke-width="1" rx="3" data-shape="trapezoid"/>
+                    <text x="450" y="105" text-anchor="middle" font-size="13" font-weight="bold" fill="#6a1b9a">一般梯形</text>
+                    <text x="450" y="125" text-anchor="middle" font-size="11" fill="#6a1b9a">（僅一組對邊平行）</text>
+                    <text x="450" y="145" text-anchor="middle" font-size="10" fill="#6a1b9a" style="cursor: pointer;">點擊查看梯形特性</text>
+                    
+                    <!-- 平行四边形区域 -->
+                    <rect x="270" y="190" width="360" height="160" fill="url(#parallelogramGrad)" stroke="#f9a825" stroke-width="2" rx="5"/>
+                    <text x="450" y="215" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00">平行四邊形</text>
+                    <text x="450" y="230" text-anchor="middle" font-size="11" fill="#ef6c00">（兩組對邊都平行）</text>
+                    
+                    <!-- 平行四边形内部分割线：分离一般平行四边形和特殊平行四边形 -->
+                    <line x1="270" y1="280" x2="630" y2="280" stroke="#f9a825" stroke-width="2" stroke-dasharray="3,3"/>
+                    
+                    <!-- 一般平行四边形区域 -->
+                    <rect x="280" y="250" width="340" height="20" fill="url(#generalParallelogramGrad)" stroke="#ff8f00" stroke-width="1" rx="2" data-shape="parallelogram"/>
+                    <text x="450" y="265" text-anchor="middle" font-size="11" font-weight="bold" fill="#e65100">一般平行四邊形 (點擊查看)</text>
+                    
+                    <!-- 特殊平行四边形区域：长方形和菱形 -->
+                    <rect x="280" y="290" width="340" height="50" fill="none" stroke="#ff6f00" stroke-width="1" rx="3"/>
+                    
+                    <!-- 长方形和菱形的分割线 -->
+                    <line x1="450" y1="290" x2="450" y2="340" stroke="#ff6f00" stroke-width="2" stroke-dasharray="3,3"/>
+                    
+                    <!-- 长方形区域 -->
+                    <rect x="290" y="300" width="150" height="30" fill="url(#rectangleGrad)" stroke="#4caf50" stroke-width="2" rx="3" data-shape="rectangle"/>
+                    <text x="365" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32" style="cursor: pointer;">長方形 📋</text>
+                    
+                    <!-- 菱形区域 -->
+                    <rect x="460" y="300" width="150" height="30" fill="url(#rhombusGrad)" stroke="#e91e63" stroke-width="2" rx="3" data-shape="rhombus"/>
+                    <text x="535" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2185b" style="cursor: pointer;">菱形 🔶</text>
+                    
+                    <!-- 正方形区域（长方形和菱形的交集） -->
+                    <rect x="420" y="305" width="60" height="20" fill="url(#squareGrad)" stroke="#ffd700" stroke-width="2" rx="2" data-shape="square"/>
+                    <text x="450" y="317" text-anchor="middle" font-size="10" font-weight="bold" fill="#f57f17" style="cursor: pointer;">正方形 ⭐</text>
+                    
+                    <!-- 包含关系说明 -->
+                    <g id="relationship-explanations">
+                        <rect x="20" y="380" width="660" height="60" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="8"/>
+                        <text x="30" y="400" font-size="14" font-weight="bold" fill="#333">層次包含關係說明：</text>
+                        <text x="30" y="418" font-size="11" fill="#666" class="explanation-text">• 一般四邊形 → 分為 不規則四邊形 和 梯形</text>
+                        <text x="30" y="432" font-size="11" fill="#666" class="explanation-text">• 梯形 → 分為 一般梯形（僅一組對邊平行） 和 平行四邊形（兩組對邊都平行）</text>
+                        <text x="380" y="418" font-size="11" fill="#666" class="explanation-text">• 平行四邊形 → 分為 一般平行四邊形 和 特殊平行四邊形</text>
+                        <text x="380" y="432" font-size="11" fill="#666" class="explanation-text">• 特殊平行四邊形 → 包含 長方形、菱形 和 它們的交集 正方形</text>
                     </g>
                 </svg>
                 
@@ -773,6 +972,7 @@
         let currentShape = 'square';
         let isAnimating = false;
         let isComparisonMode = false;
+        let isRelationshipDiagramMode = false; // 新增：关系图模式标志
 
         // 动画相关变量
         let animationState = {
@@ -1409,6 +1609,59 @@
         }
 
         /**
+         * 显示关系图
+         */
+        function showRelationshipDiagram() {
+            isRelationshipDiagramMode = true;
+            
+            // 隐藏形状显示SVG和属性面板
+            const shapeSvg = document.getElementById('shape-svg');
+            const relationshipSvg = document.getElementById('relationship-svg');
+            const propertiesPanel = document.querySelector('.properties-panel');
+            const relationshipNetwork = document.querySelector('.relationship-network');
+            
+            shapeSvg.style.display = 'none';
+            relationshipSvg.style.display = 'block';
+            propertiesPanel.style.display = 'none';
+            relationshipNetwork.style.display = 'none';
+            
+            // 更新按钮状态
+            document.querySelectorAll('.shape-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const diagramBtn = document.getElementById('relationship-diagram-btn');
+            diagramBtn.classList.add('active');
+            diagramBtn.textContent = '🔙 返回形狀學習';
+            
+            // 重置其他状态
+            resetTransformationState();
+        }
+
+        /**
+         * 隐藏关系图，切换回形状显示
+         */
+        function hideRelationshipDiagram() {
+            isRelationshipDiagramMode = false;
+            
+            // 显示形状显示SVG和属性面板
+            const shapeSvg = document.getElementById('shape-svg');
+            const relationshipSvg = document.getElementById('relationship-svg');
+            const propertiesPanel = document.querySelector('.properties-panel');
+            const relationshipNetwork = document.querySelector('.relationship-network');
+            
+            shapeSvg.style.display = 'block';
+            relationshipSvg.style.display = 'none';
+            propertiesPanel.style.display = 'block';
+            relationshipNetwork.style.display = 'block';
+            
+            // 恢复按钮状态
+            const diagramBtn = document.getElementById('relationship-diagram-btn');
+            diagramBtn.classList.remove('active');
+            diagramBtn.textContent = '📊 圖形關係圖';
+        }
+
+        /**
          * 更新变换区域显示
          */
         function updateTransformationArea(currentShapeName) {
@@ -1587,6 +1840,11 @@
          * 处理形状选择（简化版，主要用于顶部按钮）
          */
         function handleShapeSelection(shapeName) {
+            // 如果当前在关系图模式，先切换回形状显示
+            if (isRelationshipDiagramMode) {
+                hideRelationshipDiagram();
+            }
+            
             resetTransformationState();
             updateActiveShape(shapeName);
             displayShape(shapeName);
@@ -1864,6 +2122,57 @@
             document.querySelectorAll('.shape-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     handleShapeSelection(btn.dataset.shape);
+                });
+            });
+
+            // 关系图按钮事件监听
+            document.getElementById('relationship-diagram-btn').addEventListener('click', () => {
+                if (isRelationshipDiagramMode) {
+                    // 当前在关系图模式，切换回形状显示
+                    hideRelationshipDiagram();
+                    // 显示当前选中的形状
+                    handleShapeSelection(currentShape);
+                } else {
+                    // 当前在形状显示模式，切换到关系图
+                    showRelationshipDiagram();
+                }
+            });
+
+            // 关系图中图形区域的点击事件
+            document.querySelectorAll('#relationship-svg rect[data-shape]').forEach(rect => {
+                rect.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const shapeName = rect.getAttribute('data-shape');
+                    if (shapeName && shapes[shapeName]) {
+                        // 切换到对应的形状显示
+                        hideRelationshipDiagram();
+                        handleShapeSelection(shapeName);
+                    }
+                });
+            });
+
+            // 关系图中可点击文本的事件
+            document.querySelectorAll('#relationship-svg text[style*="cursor: pointer"]').forEach(text => {
+                text.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // 根据文本内容判断对应的形状
+                    const textContent = text.textContent;
+                    if (textContent.includes('梯形')) {
+                        hideRelationshipDiagram();
+                        handleShapeSelection('trapezoid');
+                    } else if (textContent.includes('長方形')) {
+                        hideRelationshipDiagram();
+                        handleShapeSelection('rectangle');
+                    } else if (textContent.includes('菱形')) {
+                        hideRelationshipDiagram();
+                        handleShapeSelection('rhombus');
+                    } else if (textContent.includes('正方形')) {
+                        hideRelationshipDiagram();
+                        handleShapeSelection('square');
+                    } else if (textContent.includes('平行四邊形')) {
+                        hideRelationshipDiagram();
+                        handleShapeSelection('parallelogram');
+                    }
                 });
             });
 
