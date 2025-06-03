@@ -91,8 +91,8 @@
         }
 
         .challenge-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
         }
 
         .relationship-diagram-btn:hover, .challenge-btn:hover {
@@ -565,6 +565,34 @@
             margin: 0 auto;
         }
 
+        /* 隐藏图形显示区域的样式 */
+        .question-shape-display.hidden {
+            display: none;
+        }
+
+        /* 问题区域占满全宽时的样式 */
+        .question-area {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .question-area.shape-hidden {
+            justify-content: center;
+        }
+
+        .question-area.shape-hidden .question-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 答对反馈动画 */
+        @keyframes correctPulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
         .challenge-header {
             display: flex;
             justify-content: space-between;
@@ -623,12 +651,6 @@
         .back-to-home-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
-        .question-area {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
         }
 
         .question-shape-display {
@@ -981,8 +1003,22 @@
                 padding: 15px;
             }
 
+            .challenge-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
             .question-area {
                 flex-direction: column;
+            }
+
+            .question-area.shape-hidden {
+                align-items: center;
+            }
+
+            .question-area.shape-hidden .question-content {
+                max-width: 100%;
             }
 
             .question-shape-display {
@@ -1112,17 +1148,9 @@
                             <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:0.9" />
                             <stop offset="100%" style="stop-color:#ce93d8;stop-opacity:0.7" />
                         </linearGradient>
-                        <linearGradient id="generalTrapezoidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:0.4" />
-                        </linearGradient>
                         <linearGradient id="parallelogramGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#fff8e1;stop-opacity:0.9" />
                             <stop offset="100%" style="stop-color:#ffecb3;stop-opacity:0.7" />
-                        </linearGradient>
-                        <linearGradient id="generalParallelogramGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#fff8e1;stop-opacity:0.6" />
-                            <stop offset="100%" style="stop-color:#fff3c4;stop-opacity:0.4" />
                         </linearGradient>
                         <linearGradient id="rectangleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:0.9" />
@@ -1220,8 +1248,8 @@
             <button class="back-to-home-btn" id="back-to-home-btn">🏠 返回首頁</button>
         </div>
 
-        <div class="question-area">
-            <div class="question-shape-display">
+        <div class="question-area shape-hidden">
+            <div class="question-shape-display hidden">
                 <h3 id="challenge-shape-title">正方形</h3>
                 <svg id="challenge-shape-svg" width="200" height="200" viewBox="0 0 250 250">
                     <polygon id="challenge-main-shape" points="" fill="#4CAF50" stroke="#333" stroke-width="3"/>
@@ -1498,8 +1526,8 @@
         let currentShape = 'square';
         let isAnimating = false;
         let isComparisonMode = false;
-        let isRelationshipDiagramMode = false; // 新增：关系图模式标志
-        let isChallengeMode = false; // 新增：挑战模式标志
+        let isRelationshipDiagramMode = false;
+        let isChallengeMode = false;
 
         // 动画相关变量
         let animationState = {
@@ -2797,7 +2825,7 @@
             if (btn) btn.classList.add('active');
         }
 
-/**
+        /**
          * 开始挑战模式
          */
         function startChallenge() {
@@ -2871,6 +2899,12 @@
                 isAnswered: false
             };
             
+            // 确保图形区域被隐藏
+            const shapeDisplay = document.querySelector('.question-shape-display');
+            const questionArea = document.querySelector('.question-area');
+            shapeDisplay.classList.add('hidden');
+            questionArea.classList.add('shape-hidden');
+            
             // 更新UI
             updateChallengeProgress();
             displayCurrentQuestion();
@@ -2889,7 +2923,7 @@
             wrongCount.textContent = challengeState.wrongQuestions.length;
         }
 
-/**
+        /**
          * 显示当前题目
          */
         function displayCurrentQuestion() {
@@ -2919,7 +2953,7 @@
             
             challengeState.isAnswered = false;
             
-            // 直接隐藏图形显示区域并调整布局
+            // 确保图形完全隐藏
             shapeDisplay.classList.add('hidden');
             questionArea.classList.add('shape-hidden');
             
@@ -3177,7 +3211,7 @@
         }
 
         /**
-         * 处理答题
+         * 处理答题 - 核心修改：答对直接进入下一题，答错显示图形和提示
          */
         function handleAnswer(selectedAnswer) {
             if (challengeState.isAnswered) return;
@@ -3192,12 +3226,11 @@
                 btn.style.opacity = '0.6';
             });
             
-            // 显示反馈
-            showAnswerFeedback(isCorrect, question);
-            
             // 更新分数和错题记录
             if (isCorrect) {
                 challengeState.score++;
+                // 答对了，显示简短提示后直接进入下一题
+                showCorrectFeedback();
             } else {
                 challengeState.wrongQuestions.push({
                     question: question,
@@ -3205,6 +3238,8 @@
                     correctAnswer: question.answer,
                     questionIndex: challengeState.currentQuestionIndex
                 });
+                // 答错了，显示图形和详细反馈
+                showWrongFeedback(question);
             }
             
             // 更新进度显示
@@ -3212,44 +3247,82 @@
         }
 
         /**
-         * 显示答题反馈
+         * 显示答对的反馈（简短提示后自动进入下一题）
          */
-        function showAnswerFeedback(isCorrect, question) {
+        function showCorrectFeedback() {
+            // 显示绿色的正确提示
+            const correctFeedback = document.createElement('div');
+            correctFeedback.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 15px;
+                font-size: 20px;
+                font-weight: bold;
+                z-index: 1000;
+                box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+                animation: correctPulse 0.6s ease;
+            `;
+            correctFeedback.innerHTML = '🎉 答對了！';
+            
+            document.body.appendChild(correctFeedback);
+            
+            // 1.2秒后移除提示并进入下一题
+            setTimeout(() => {
+                document.body.removeChild(correctFeedback);
+                
+                // 进入下一题或显示结果
+                if (challengeState.currentQuestionIndex < challengeState.totalQuestions - 1) {
+                    nextQuestion();
+                } else {
+                    showChallengeResult();
+                }
+            }, 1200);
+        }
+
+        /**
+         * 显示答错的反馈（显示图形和详细解释）
+         */
+        function showWrongFeedback(question) {
+            // 显示图形区域
+            const shapeDisplay = document.querySelector('.question-shape-display');
+            const questionArea = document.querySelector('.question-area');
             const answerFeedback = document.querySelector('.answer-feedback');
             const feedbackIcon = document.querySelector('.feedback-icon');
             const feedbackText = document.querySelector('.feedback-text');
             const nextBtn = document.querySelector('.next-question-btn');
             
-            answerFeedback.style.display = 'block';
+            // 显示图形
+            shapeDisplay.classList.remove('hidden');
+            questionArea.classList.remove('shape-hidden');
             
-            if (isCorrect) {
-                feedbackIcon.className = 'feedback-icon correct';
-                feedbackText.innerHTML = `
-                    <strong>✅ 答對了！</strong><br>
-                    ${question.explanation}
-                `;
-                feedbackIcon.style.color = '#4CAF50';
-            } else {
-                feedbackIcon.className = 'feedback-icon wrong';
-                feedbackText.innerHTML = `
-                    <strong>❌ 答錯了！</strong><br>
-                    正確答案：<strong>${question.answer ? '正確' : '錯誤'}</strong><br>
-                    ${question.explanation}
-                `;
-                feedbackIcon.style.color = '#ff6b6b';
-                
-                // 答错时高亮对应的特性
-                if (question.property) {
+            // 显示详细反馈
+            answerFeedback.style.display = 'block';
+            feedbackIcon.className = 'feedback-icon wrong';
+            feedbackText.innerHTML = `
+                <strong>❌ 答錯了！</strong><br>
+                正確答案：<strong>${question.answer ? '正確' : '錯誤'}</strong><br>
+                <div style="margin-top: 10px; color: #666;">${question.explanation}</div>
+            `;
+            feedbackIcon.style.color = '#ff6b6b';
+            
+            // 高亮对应的图形特性
+            if (question.property) {
+                setTimeout(() => {
                     highlightChallengeVisualElement(question.property);
-                }
+                }, 300);
             }
             
             // 设置下一题按钮
             if (challengeState.currentQuestionIndex < challengeState.totalQuestions - 1) {
-                nextBtn.textContent = '下一題 →';
+                nextBtn.textContent = '理解了，下一題 →';
                 nextBtn.onclick = nextQuestion;
             } else {
-                nextBtn.textContent = '查看結果 →';
+                nextBtn.textContent = '查看最終結果 →';
                 nextBtn.onclick = showChallengeResult;
             }
         }
@@ -3259,6 +3332,13 @@
          */
         function nextQuestion() {
             challengeState.currentQuestionIndex++;
+            
+            // 确保重新隐藏图形区域
+            const shapeDisplay = document.querySelector('.question-shape-display');
+            const questionArea = document.querySelector('.question-area');
+            shapeDisplay.classList.add('hidden');
+            questionArea.classList.add('shape-hidden');
+            
             displayCurrentQuestion();
         }
 
