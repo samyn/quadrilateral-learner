@@ -4,10 +4,10 @@ const shapes = {
         points: "75,75 175,75 175,175 75,175",
         title: "正方形",
         properties: [
-            { text: "四條邊都相等", icon: "equal", visual: "equal" },
-            { text: "四個角都是直角", icon: "right-angle", visual: "right-angle" },
-            { text: "對邊平行", icon: "parallel", visual: "parallel" },
-            { text: "對角線相等且垂直", icon: "diagonal", visual: "diagonal" }
+            { text: "四條邊都相等", icon: "equal", visual: "equal", category: "sides", level: "highest" },
+            { text: "四個角都是直角", icon: "right-angle", visual: "right-angle", category: "angles", level: "highest" },
+            { text: "對邊平行", icon: "parallel", visual: "parallel", category: "parallel", level: "basic" },
+            { text: "對角線相等且垂直", icon: "diagonal", visual: "diagonal", category: "diagonals", level: "highest" }
         ],
         visualElements: {
             parallel: { show: true },
@@ -20,10 +20,10 @@ const shapes = {
         points: "50,75 200,75 200,175 50,175",
         title: "長方形",
         properties: [
-            { text: "對邊相等", icon: "equal", visual: "equal" },
-            { text: "四個角都是直角", icon: "right-angle", visual: "right-angle" },
-            { text: "對邊平行", icon: "parallel", visual: "parallel" },
-            { text: "對角線相等", icon: "diagonal", visual: "diagonal" }
+            { text: "對邊相等", icon: "equal", visual: "equal", category: "sides", level: "medium" },
+            { text: "四個角都是直角", icon: "right-angle", visual: "right-angle", category: "angles", level: "highest" },
+            { text: "對邊平行", icon: "parallel", visual: "parallel", category: "parallel", level: "basic" },
+            { text: "對角線相等", icon: "diagonal", visual: "diagonal", category: "diagonals", level: "medium" }
         ],
         visualElements: {
             parallel: { show: true },
@@ -36,10 +36,10 @@ const shapes = {
         points: "125,70 190,125 125,180 60,125",
         title: "菱形",
         properties: [
-            { text: "四條邊都相等", icon: "equal", visual: "equal" },
-            { text: "對角相等", icon: "right-angle", visual: "general-angle" },
-            { text: "對邊平行", icon: "parallel", visual: "parallel" },
-            { text: "對角線垂直且互相平分", icon: "diagonal", visual: "diagonal" }
+            { text: "四條邊都相等", icon: "equal", visual: "equal", category: "sides", level: "highest" },
+            { text: "對角相等", icon: "right-angle", visual: "general-angle", category: "angles", level: "medium" },
+            { text: "對邊平行", icon: "parallel", visual: "parallel", category: "parallel", level: "basic" },
+            { text: "對角線垂直且互相平分", icon: "diagonal", visual: "diagonal", category: "diagonals", level: "medium" }
         ],
         visualElements: {
             parallel: { show: true },
@@ -53,10 +53,10 @@ const shapes = {
         points: "75,75 175,75 200,175 100,175",
         title: "平行四邊形",
         properties: [
-            { text: "對邊相等", icon: "equal", visual: "equal" },
-            { text: "對角相等", icon: "right-angle", visual: "general-angle" },
-            { text: "對邊平行", icon: "parallel", visual: "parallel" },
-            { text: "對角線互相平分", icon: "diagonal", visual: "diagonal" }
+            { text: "對邊相等", icon: "equal", visual: "equal", category: "sides", level: "medium" },
+            { text: "對角相等", icon: "right-angle", visual: "general-angle", category: "angles", level: "medium" },
+            { text: "對邊平行", icon: "parallel", visual: "parallel", category: "parallel", level: "basic" },
+            { text: "對角線互相平分", icon: "diagonal", visual: "diagonal", category: "diagonals", level: "low" }
         ],
         visualElements: {
             parallel: { show: true },
@@ -70,9 +70,9 @@ const shapes = {
         points: "75,75 175,75 150,175 100,175",
         title: "梯形",
         properties: [
-            { text: "有一組對邊平行", icon: "parallel", visual: "parallel" },
-            { text: "上底和下底長度不等", icon: "equal", visual: "equal" },
-            { text: "兩腰可能不等", icon: "equal", visual: "equal-sides" }
+            { text: "有一組對邊平行", icon: "parallel", visual: "parallel", category: "parallel", level: "partial" },
+            { text: "上底和下底長度不等", icon: "equal", visual: "equal", category: "sides", level: "low" },
+            { text: "兩腰可能不等", icon: "equal", visual: "equal-sides", category: "sides", level: "low" }
         ],
         visualElements: {
             parallel: { show: true, onlyOne: true },
@@ -81,6 +81,47 @@ const shapes = {
             rightAngle: { show: false },
             diagonal: { show: false }
         }
+    }
+};
+
+// 特性分类和层次定义
+const propertyCategories = {
+    sides: {
+        name: "邊長特性",
+        icon: "📏",
+        hierarchy: [
+            { level: "highest", text: "四條邊都相等", description: "完全規則" },
+            { level: "medium", text: "對邊相等", description: "部分規則" },
+            { level: "low", text: "邊長不等", description: "不規則" },
+            { level: "partial", text: "部分邊相等", description: "特殊情況" }
+        ]
+    },
+    angles: {
+        name: "角度特性", 
+        icon: "📐",
+        hierarchy: [
+            { level: "highest", text: "四個角都是直角", description: "完全垂直" },
+            { level: "medium", text: "對角相等", description: "部分規則" },
+            { level: "low", text: "角度不等", description: "不規則" }
+        ]
+    },
+    parallel: {
+        name: "平行特性",
+        icon: "📄", 
+        hierarchy: [
+            { level: "basic", text: "對邊平行", description: "兩組平行" },
+            { level: "partial", text: "有一組對邊平行", description: "一組平行" },
+            { level: "none", text: "無平行邊", description: "無規則" }
+        ]
+    },
+    diagonals: {
+        name: "對角線特性",
+        icon: "📐",
+        hierarchy: [
+            { level: "highest", text: "對角線相等且垂直", description: "完全特殊" },
+            { level: "medium", text: "對角線相等或垂直", description: "部分特殊" },
+            { level: "low", text: "對角線互相平分", description: "基本特性" }
+        ]
     }
 };
 
@@ -123,6 +164,71 @@ const transformationPaths = {
     'square-trapezoid': '先退化為長方形或菱形，再變為平行四邊形，最後讓一組對邊不再平行',
     'square-parallelogram': '改變邊長比例或角度，失去正方形的完美對稱性'
 };
+
+/**
+ * 获取形状在特定类别中的特性
+ * @param {string} shapeName - 形状名称
+ * @param {string} category - 特性类别
+ * @returns {Object|null} 特性对象
+ */
+function getShapePropertyInCategory(shapeName, category) {
+    const shape = shapes[shapeName];
+    if (!shape) return null;
+    
+    return shape.properties.find(prop => prop.category === category) || null;
+}
+
+/**
+ * 获取特性的层次级别描述
+ * @param {string} category - 特性类别
+ * @param {string} level - 层次级别
+ * @returns {Object} 层次描述对象
+ */
+function getPropertyLevelInfo(category, level) {
+    const categoryInfo = propertyCategories[category];
+    if (!categoryInfo) return null;
+    
+    return categoryInfo.hierarchy.find(h => h.level === level) || null;
+}
+
+/**
+ * 比较两个特性的层次关系
+ * @param {Object} sourceProp - 源特性
+ * @param {Object} targetProp - 目标特性
+ * @returns {Object} 比较结果
+ */
+function comparePropertyLevels(sourceProp, targetProp) {
+    if (!sourceProp && !targetProp) {
+        return { type: 'same', icon: '➖', color: '#999', description: '均無此特性' };
+    }
+    
+    if (!sourceProp && targetProp) {
+        return { type: 'gain', icon: '➕', color: '#4CAF50', description: '獲得新特性' };
+    }
+    
+    if (sourceProp && !targetProp) {
+        return { type: 'lose', icon: '➖', color: '#FF6B6B', description: '失去特性' };
+    }
+    
+    if (sourceProp.level === targetProp.level) {
+        if (sourceProp.text === targetProp.text) {
+            return { type: 'same', icon: '✓', color: '#666', description: '保持不變' };
+        } else {
+            return { type: 'change', icon: '🔄', color: '#FF9800', description: '同級變化' };
+        }
+    }
+    
+    // 定义层次优先级
+    const levelPriority = { 'highest': 4, 'medium': 3, 'basic': 2, 'partial': 1, 'low': 0, 'none': -1 };
+    const sourceLevel = levelPriority[sourceProp.level] || 0;
+    const targetLevel = levelPriority[targetProp.level] || 0;
+    
+    if (targetLevel > sourceLevel) {
+        return { type: 'upgrade', icon: '⬆️', color: '#4CAF50', description: '特性提升' };
+    } else {
+        return { type: 'downgrade', icon: '⬇️', color: '#FF6B6B', description: '特性降級' };
+    }
+}
 
 /**
  * 更新视觉标记
@@ -633,7 +739,7 @@ function displayShape(shapeName) {
 }
 
 /**
- * 显示形状对比
+ * 显示形状对比 - 改进版本，按类别分组显示
  * @param {string} sourceShape - 源形状
  * @param {string} targetShape - 目标形状
  */
@@ -653,84 +759,55 @@ function displayShapeComparison(sourceShape, targetShape) {
     // 创建对比内容
     propertiesList.innerHTML = '';
     
-    // 添加变换说明
-    const transformationDiv = document.createElement('div');
-    transformationDiv.className = 'transformation-summary';
-    transformationDiv.style.cssText = `
-        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-        border: 2px solid #4CAF50;
-        border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 20px;
-        text-align: center;
-        font-weight: bold;
-        color: #2e7d32;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    `;
+    // 按类别组织比较
+    const categories = ['sides', 'angles', 'parallel', 'diagonals'];
     
-    const transformKey = `${sourceShape}-${targetShape}`;
-    const transformDesc = transformationPaths[transformKey] || '變換完成';
-    transformationDiv.innerHTML = `
-        <div style="font-size: 14px; margin-bottom: 5px;">🎯 變換關鍵</div>
-        <div style="font-size: 16px;">${transformDesc}</div>
-    `;
-    propertiesList.appendChild(transformationDiv);
-    
-    // 比较特性
-    const sourceProps = shapes[sourceShape].properties;
-    const targetProps = shapes[targetShape].properties;
-    
-    // 创建对比标题
-    const comparisonTitle = document.createElement('div');
-    comparisonTitle.style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 20px 0 15px 0;
-        font-weight: bold;
-        font-size: 16px;
-    `;
-    comparisonTitle.innerHTML = `
-        <span style="color: #FF6B6B; flex: 1; text-align: center;">變換前</span>
-        <span style="color: #666; flex: 0 0 40px; text-align: center;">vs</span>
-        <span style="color: #4CAF50; flex: 1; text-align: center;">變換後</span>
-    `;
-    propertiesList.appendChild(comparisonTitle);
-    
-    // 收集所有可能的特性类型
-    const allPropertyTypes = new Set();
-    sourceProps.forEach(prop => allPropertyTypes.add(prop.text));
-    targetProps.forEach(prop => allPropertyTypes.add(prop.text));
-    
-    // 为每种特性创建对比行
-    Array.from(allPropertyTypes).forEach((propText, index) => {
+    categories.forEach((category, categoryIndex) => {
+        const categoryInfo = propertyCategories[category];
+        if (!categoryInfo) return;
+        
+        const sourceProp = getShapePropertyInCategory(sourceShape, category);
+        const targetProp = getShapePropertyInCategory(targetShape, category);
+        
+        // 如果该类别下两个形状都没有特性，则跳过
+        if (!sourceProp && !targetProp) return;
+        
         setTimeout(() => {
-            const sourceProp = sourceProps.find(p => p.text === propText);
-            const targetProp = targetProps.find(p => p.text === propText);
-            
-            const comparisonRow = document.createElement('div');
-            comparisonRow.className = 'property-comparison';
-            comparisonRow.style.cssText = `
-                display: flex;
-                align-items: center;
-                margin-bottom: 12px;
-                background: white;
-                border-radius: 8px;
-                padding: 10px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-                transition: all 0.3s ease;
+            // 创建类别标题
+            const categoryHeader = document.createElement('div');
+            categoryHeader.style.cssText = `
+                margin: 25px 0 15px 0;
+                padding: 12px;
+                background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
+                border-radius: 10px;
+                border-left: 4px solid #4CAF50;
+                font-weight: bold;
+                font-size: 15px;
+                color: #333;
                 opacity: 0;
                 transform: translateY(20px);
-                animation: slideUp 0.5s ease forwards;
-                animation-delay: ${index * 0.1}s;
+                animation: slideInCategory 0.6s ease forwards;
+                animation-delay: ${categoryIndex * 0.2}s;
             `;
             
-            // 添加CSS动画样式
-            if (!document.getElementById('comparison-animations')) {
+            categoryHeader.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <span>${categoryInfo.name}</span>
+                </div>
+            `;
+            
+            // 添加动画样式
+            if (!document.getElementById('category-animations')) {
                 const style = document.createElement('style');
-                style.id = 'comparison-animations';
+                style.id = 'category-animations';
                 style.textContent = `
-                    @keyframes slideUp {
+                    @keyframes slideInCategory {
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    @keyframes slideInComparison {
                         to {
                             opacity: 1;
                             transform: translateY(0);
@@ -740,46 +817,89 @@ function displayShapeComparison(sourceShape, targetShape) {
                 document.head.appendChild(style);
             }
             
+            propertiesList.appendChild(categoryHeader);
+            
+            // 创建该类别的比较行
+            const comparisonResult = comparePropertyLevels(sourceProp, targetProp);
+            
+            const comparisonRow = document.createElement('div');
+            comparisonRow.className = `property-comparison category-${category}`;
+            comparisonRow.style.cssText = `
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+                border-left: 3px solid ${comparisonResult.color};
+                transition: all 0.3s ease;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideInComparison 0.5s ease forwards;
+                animation-delay: ${categoryIndex * 0.2 + 0.3}s;
+                position: relative;
+            `;
+            
+            // 创建比较内容
             const sourceContent = sourceProp ? `
-                <div class="property-icon ${sourceProp.icon}" style="width: 16px; height: 16px; margin-right: 8px;"></div>
-                <span style="font-size: 13px;">${sourceProp.text}</span>
+                <div style="display: flex; align-items: center;">
+                    <div>
+                        <div style="font-size: 13px; font-weight: bold; color: #333;">${sourceProp.text}</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 2px;">
+                            ${getPropertyLevelInfo(category, sourceProp.level)?.description || ''}
+                        </div>
+                    </div>
+                </div>
             ` : `
-                <span style="color: #ccc; font-size: 13px;">❌ 無此特性</span>
+                <div style="color: #999; font-size: 13px; text-align: center;">
+                    <div>❌ 無此特性</div>
+                </div>
             `;
             
             const targetContent = targetProp ? `
-                <div class="property-icon ${targetProp.icon}" style="width: 16px; height: 16px; margin-right: 8px;"></div>
-                <span style="font-size: 13px;">${targetProp.text}</span>
+                <div style="display: flex; align-items: center;">
+                    <div>
+                        <div style="font-size: 13px; font-weight: bold; color: #333;">${targetProp.text}</div>
+                        <div style="font-size: 11px; color: #666; margin-top: 2px;">
+                            ${getPropertyLevelInfo(category, targetProp.level)?.description || ''}
+                        </div>
+                    </div>
+                </div>
             ` : `
-                <span style="color: #ccc; font-size: 13px;">❌ 無此特性</span>
+                <div style="color: #999; font-size: 13px; text-align: center;">
+                    <div>❌ 無此特性</div>
+                </div>
             `;
             
-            // 判断变化状态
-            let changeIndicator = '';
-            let changeColor = '#666';
-            if (!sourceProp && targetProp) {
-                changeIndicator = '➕';
-                changeColor = '#4CAF50';
-            } else if (sourceProp && !targetProp) {
-                changeIndicator = '➖';
-                changeColor = '#FF6B6B';
-            } else if (sourceProp && targetProp && sourceProp.text === targetProp.text) {
-                changeIndicator = '✓';
-                changeColor = '#666';
-            } else if (sourceProp && targetProp && sourceProp.text !== targetProp.text) {
-                changeIndicator = '🔄';
-                changeColor = '#FF9800';
+            // 显示层次关系和包含关系
+            let relationshipInfo = '';
+            if (sourceProp && targetProp && sourceProp.level !== targetProp.level) {
+                if (sourceProp.level === 'medium' && targetProp.level === 'highest') {
+                    relationshipInfo = '<div style="font-size: 10px; color: #4CAF50; margin-top: 3px;">💡 "四條邊都相等" 包含了 "對邊相等"</div>';
+                } else if (sourceProp.level === 'highest' && targetProp.level === 'medium') {
+                    relationshipInfo = '<div style="font-size: 10px; color: #FF9800; margin-top: 3px;">⚠️ 從完全規則退化為部分規則</div>';
+                } else if (sourceProp.level === 'partial' && targetProp.level === 'basic') {
+                    relationshipInfo = '<div style="font-size: 10px; color: #4CAF50; margin-top: 3px;">💡 從一組平行提升為兩組平行</div>';
+                }
             }
             
             comparisonRow.innerHTML = `
-                <div style="flex: 1; display: flex; align-items: center; color: ${sourceProp ? '#333' : '#999'};">
+                <div style="flex: 1; padding-right: 15px;">
                     ${sourceContent}
+                    ${relationshipInfo && sourceProp ? relationshipInfo : ''}
                 </div>
-                <div style="flex: 0 0 40px; text-align: center; color: ${changeColor}; font-size: 18px;">
-                    ${changeIndicator}
+                <div style="flex: 0 0 80px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.8); color: ${comparisonResult.color}; border: none; border-radius: 20px; padding: 8px 12px; font-size: 16px;">
+                        ${comparisonResult.icon}
+                    </div>
+                    <div style="font-size: 10px; color: ${comparisonResult.color}; margin-top: 4px; font-weight: bold;">
+                        ${comparisonResult.description}
+                    </div>
                 </div>
-                <div style="flex: 1; display: flex; align-items: center; color: ${targetProp ? '#333' : '#999'};">
+                <div style="flex: 1; padding-left: 15px;">
                     ${targetContent}
+                    ${relationshipInfo && targetProp ? relationshipInfo : ''}
                 </div>
             `;
             
@@ -788,10 +908,12 @@ function displayShapeComparison(sourceShape, targetShape) {
                 document.querySelectorAll('.property-comparison').forEach(row => {
                     row.style.background = 'white';
                     row.style.transform = 'scale(1)';
+                    row.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
                 });
                 
                 comparisonRow.style.background = '#f0f8ff';
                 comparisonRow.style.transform = 'scale(1.02)';
+                comparisonRow.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
                 
                 // 高亮对应的视觉元素
                 if (targetProp && targetProp.visual) {
@@ -800,7 +922,8 @@ function displayShapeComparison(sourceShape, targetShape) {
             });
             
             propertiesList.appendChild(comparisonRow);
-        }, index * 100);
+            
+        }, categoryIndex * 300);
     });
     
     // 添加返回按钮
@@ -810,7 +933,7 @@ function displayShapeComparison(sourceShape, targetShape) {
         backButton.style.cssText = `
             width: 100%;
             padding: 12px;
-            margin-top: 20px;
+            margin-top: 25px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
@@ -818,6 +941,10 @@ function displayShapeComparison(sourceShape, targetShape) {
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInComparison 0.5s ease forwards;
+            animation-delay: ${categories.length * 0.3 + 0.5}s;
         `;
         
         backButton.addEventListener('mouseenter', () => {
@@ -831,13 +958,12 @@ function displayShapeComparison(sourceShape, targetShape) {
         });
         
         backButton.addEventListener('click', () => {
-            // 修复：返回形状详情时重置选择状态
             resetShapeSelection();
             displayShape(targetShape);
         });
         
         propertiesList.appendChild(backButton);
-    }, (Array.from(allPropertyTypes).length * 100) + 200);
+    }, categories.length * 300 + 500);
 }
 
 /**
@@ -1049,7 +1175,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 形状按钮事件监听
     document.querySelectorAll('.shape-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            // 修复：在切换形状时重置选择状态
             resetShapeSelection();
             updateActiveShape(btn.dataset.shape);
             displayShape(btn.dataset.shape);
