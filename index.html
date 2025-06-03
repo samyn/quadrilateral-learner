@@ -78,13 +78,13 @@
             padding: 12px 20px;
             border: none;
             border-radius: 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
         }
 
         .relationship-diagram-btn:hover {
@@ -624,7 +624,7 @@
         <button class="shape-btn" data-shape="rhombus">菱形</button>
         <button class="shape-btn" data-shape="parallelogram">平行四邊形</button>
         <button class="shape-btn" data-shape="trapezoid">梯形</button>
-        <button class="relationship-diagram-btn" id="relationship-diagram-btn">📊 圖形關係圖</button>
+        <button class="relationship-diagram-btn" id="relationship-diagram-btn">圖形關係圖</button>
     </div>
 
     <div class="animation-container">
@@ -1624,7 +1624,7 @@
             // 恢复按钮状态
             const diagramBtn = document.getElementById('relationship-diagram-btn');
             diagramBtn.classList.remove('active');
-            diagramBtn.textContent = '📊 圖形關係圖';
+            diagramBtn.textContent = '圖形關係圖';
         }
 
         /**
@@ -1711,7 +1711,7 @@
             
             // 更新提示信息
             relationshipInfo.classList.remove('hidden', 'transformation');
-            relationshipText.innerHTML = `點擊下方任一形狀查看變換方式`;
+            relationshipText.innerHTML = `點擊下方任一形狀查看變換方式及比較特性`;
         }
 
         /**
