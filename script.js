@@ -1710,6 +1710,165 @@ function showErrorMessage(message) {
 }
 
 /**
+ * 显示重置确认对话框
+ */
+function showResetConfirmationDialog() {
+    // 获取当前进度信息
+    const progress = ProgressManager.getProgress();
+    const totalQuestions = getTotalQuestionCount();
+    
+    // 创建确认对话框
+    const overlay = document.createElement('div');
+    overlay.className = 'reset-confirmation-overlay';
+    overlay.innerHTML = `
+        <div class="reset-confirmation-dialog">
+            <h3>⚠️ 確認重置進度</h3>
+            <p>
+                您確定要清除所有答題記錄嗎？<br>
+                <strong>目前進度：</strong><br>
+                • 已完成題目：${progress.correctQuestions.length}/${totalQuestions}<br>
+                • 挑戰次數：${progress.challengeCount}<br>
+                • 需要復習：${progress.wrongQuestions.length} 題
+            </p>
+            <p style="color: #ff6b6b; font-weight: bold;">
+                此操作無法撤銷！
+            </p>
+            <div class="reset-confirmation-buttons">
+                <button class="reset-cancel-btn">❌ 取消</button>
+                <button class="reset-confirm-btn">🔄 確認重置</button>
+            </div>
+        </div>
+    `;
+    
+    // 添加事件监听器
+    const cancelBtn = overlay.querySelector('.reset-cancel-btn');
+    const confirmBtn = overlay.querySelector('.reset-confirm-btn');
+    
+    cancelBtn.addEventListener('click', () => {
+        hideResetConfirmationDialog(overlay);
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+        executeProgressReset();
+        hideResetConfirmationDialog(overlay);
+    });
+    
+    // 点击遮罩层关闭
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            hideResetConfirmationDialog(overlay);
+        }
+    });
+    
+    document.body.appendChild(overlay);
+}
+
+/**
+ * 隐藏重置确认对话框
+ */
+function hideResetConfirmationDialog(overlay) {
+    overlay.style.animation = 'fadeOut 0.3s ease';
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+        }
+    }, 300);
+    
+    // 添加淡出动画CSS
+    if (!document.getElementById('fadeout-style')) {
+        const style = document.createElement('style');
+        style.id = 'fadeout-style';
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+/**
+ * 执行进度重置
+ */
+function executeProgressReset() {
+    // 重置进度数据
+    ProgressManager.resetProgress();
+    
+    // 显示重置成功提示
+    showResetSuccessMessage();
+    
+    // 重新初始化挑战
+    setTimeout(() => {
+        initializeChallenge();
+    }, 1500);
+}
+
+/**
+ * 显示重置成功消息
+ */
+function showResetSuccessMessage() {
+    const successMessage = document.createElement('div');
+    successMessage.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        z-index: 2000;
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        animation: successPulse 1.5s ease;
+        text-align: center;
+    `;
+    successMessage.innerHTML = `
+        ✅ 進度重置成功！<br>
+        <span style="font-size: 14px; opacity: 0.9;">正在重新開始挑戰...</span>
+    `;
+    
+    // 添加成功动画CSS
+    if (!document.getElementById('success-pulse-style')) {
+        const style = document.createElement('style');
+        style.id = 'success-pulse-style';
+        style.textContent = `
+            @keyframes successPulse {
+                0% { 
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.8);
+                }
+                50% { 
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1.1);
+                }
+                100% { 
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(successMessage);
+    
+    // 1.5秒后移除消息
+    setTimeout(() => {
+        if (document.body.contains(successMessage)) {
+            successMessage.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => {
+                if (document.body.contains(successMessage)) {
+                    document.body.removeChild(successMessage);
+                }
+            }, 300);
+        }
+    }, 1500);
+}
+
+/**
  * 退出挑战模式
  */
 function exitChallenge() {
@@ -1789,23 +1948,21 @@ function showCompletionMessage() {
     const totalQuestions = getTotalQuestionCount();
     const challengeContainer = document.querySelector('.challenge-container');
     challengeContainer.innerHTML = `
-        <div style="text-align: center; padding: 60px 20px;">
-            <div style="font-size: 80px; margin-bottom: 30px;">🎉</div>
-            <h2 style="color: #4CAF50; margin-bottom: 20px; font-size: 2.5em;">挑戰完成！</h2>
-            <p style="font-size: 1.4em; color: #666; margin-bottom: 30px;">
+        <div class="completion-container">
+            <div class="completion-icon">🎉</div>
+            <h2>挑戰完成！</h2>
+            <p class="completion-description">
                 恭喜你已經完成所有${totalQuestions}道題目的挑戰！<br>
                 你對四邊形的知識掌握得非常好！
             </p>
-            <div style="margin: 30px 0;">
-                <div style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; display: inline-block; padding: 15px 30px; border-radius: 25px; font-size: 1.2em; font-weight: bold;">
-                    大師級別 🏆
-                </div>
+            <div class="master-badge">
+                大師級別 🏆
             </div>
-            <div style="margin-top: 40px;">
-                <button onclick="ProgressManager.resetProgress(); initializeChallenge();" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-right: 15px;">
+            <div class="completion-actions">
+                <button class="completion-btn" onclick="ProgressManager.resetProgress(); initializeChallenge();">
                     🔄 重新開始所有挑戰
                 </button>
-                <button onclick="exitChallenge();" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                <button class="completion-btn home-btn" onclick="exitChallenge();">
                     🏠 返回學習
                 </button>
             </div>
@@ -2448,6 +2605,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             const answer = e.target.dataset.answer === 'true';
             handleAnswer(answer);
         });
+    });
+
+    // 重置进度按钮
+    document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        showResetConfirmationDialog();
     });
 
     // 结果界面按钮
