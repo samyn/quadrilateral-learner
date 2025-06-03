@@ -747,61 +747,27 @@
                     
                     <!-- 不规则四边形区域 -->
                     <rect x="60" y="60" width="180" height="300" fill="url(#irregularQuadGrad)" stroke="#f57c00" stroke-width="2" rx="5"/>
-                    <text x="150" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00">不規則四邊形</text>
-                    <text x="150" y="210" text-anchor="middle" font-size="12" fill="#e65100">（無特殊規律的四邊形）</text>
+                    <text x="150" y="210" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00">不規則四邊形</text>
                     
                     <!-- 梯形区域 -->
-                    <rect x="260" y="60" width="380" height="300" fill="url(#trapezoidGrad)" stroke="#7b1fa2" stroke-width="2" rx="5"/>
-                    <text x="450" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="#7b1fa2">梯形</text>
-                    
-                    <!-- 梯形内部分割线：分离一般梯形和平行四边形 -->
-                    <line x1="260" y1="180" x2="640" y2="180" stroke="#7b1fa2" stroke-width="2" stroke-dasharray="5,5"/>
-                    
-                    <!-- 一般梯形区域（只有一组对边平行） -->
-                    <rect x="270" y="70" width="360" height="100" fill="url(#generalTrapezoidGrad)" stroke="#8e24aa" stroke-width="1" rx="3" data-shape="trapezoid"/>
-                    <text x="450" y="105" text-anchor="middle" font-size="13" font-weight="bold" fill="#6a1b9a">一般梯形</text>
-                    <text x="450" y="125" text-anchor="middle" font-size="11" fill="#6a1b9a">（僅一組對邊平行）</text>
-                    <text x="450" y="145" text-anchor="middle" font-size="10" fill="#6a1b9a" style="cursor: pointer;">點擊查看梯形特性</text>
+                    <rect x="260" y="60" width="380" height="300" fill="url(#trapezoidGrad)" stroke="#7b1fa2" stroke-width="2" rx="5" data-shape="trapezoid"/>
+                    <text x="450" y="130" text-anchor="middle" font-size="16" font-weight="bold" fill="#7b1fa2">梯形</text>
                     
                     <!-- 平行四边形区域 -->
-                    <rect x="270" y="190" width="360" height="160" fill="url(#parallelogramGrad)" stroke="#f9a825" stroke-width="2" rx="5"/>
-                    <text x="450" y="215" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00">平行四邊形</text>
-                    <text x="450" y="230" text-anchor="middle" font-size="11" fill="#ef6c00">（兩組對邊都平行）</text>
-                    
-                    <!-- 平行四边形内部分割线：分离一般平行四边形和特殊平行四边形 -->
-                    <line x1="270" y1="280" x2="630" y2="280" stroke="#f9a825" stroke-width="2" stroke-dasharray="3,3"/>
-                    
-                    <!-- 一般平行四边形区域 -->
-                    <rect x="280" y="250" width="340" height="20" fill="url(#generalParallelogramGrad)" stroke="#ff8f00" stroke-width="1" rx="2" data-shape="parallelogram"/>
-                    <text x="450" y="265" text-anchor="middle" font-size="11" font-weight="bold" fill="#e65100">一般平行四邊形 (點擊查看)</text>
-                    
-                    <!-- 特殊平行四边形区域：长方形和菱形 -->
-                    <rect x="280" y="290" width="340" height="50" fill="none" stroke="#ff6f00" stroke-width="1" rx="3"/>
-                    
-                    <!-- 长方形和菱形的分割线 -->
-                    <line x1="450" y1="290" x2="450" y2="340" stroke="#ff6f00" stroke-width="2" stroke-dasharray="3,3"/>
-                    
+                    <rect x="270" y="190" width="360" height="160" fill="url(#parallelogramGrad)" stroke="#f9a825" stroke-width="2" rx="5" data-shape="parallelogram"/>
+                    <text x="450" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#f57c00" style="cursor: pointer;">平行四邊形</text>                                                  
+                                                            
                     <!-- 长方形区域 -->
-                    <rect x="290" y="300" width="150" height="30" fill="url(#rectangleGrad)" stroke="#4caf50" stroke-width="2" rx="3" data-shape="rectangle"/>
-                    <text x="365" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32" style="cursor: pointer;">長方形 📋</text>
+                    <rect x="290" y="270" width="170" height="60" fill="url(#rectangleGrad)" stroke="#4caf50" stroke-width="2" rx="3" data-shape="rectangle"/>
+                    <text x="365" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32" style="cursor: pointer;">長方形</text>
                     
                     <!-- 菱形区域 -->
-                    <rect x="460" y="300" width="150" height="30" fill="url(#rhombusGrad)" stroke="#e91e63" stroke-width="2" rx="3" data-shape="rhombus"/>
-                    <text x="535" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2185b" style="cursor: pointer;">菱形 🔶</text>
-                    
+                    <rect x="400" y="270" width="170" height="60" fill="url(#rhombusGrad)" stroke="#e91e63" stroke-width="2" rx="3" data-shape="rhombus"/>
+                    <text x="535" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2185b" style="cursor: pointer;">菱形</text>
+
                     <!-- 正方形区域（长方形和菱形的交集） -->
-                    <rect x="420" y="305" width="60" height="20" fill="url(#squareGrad)" stroke="#ffd700" stroke-width="2" rx="2" data-shape="square"/>
-                    <text x="450" y="317" text-anchor="middle" font-size="10" font-weight="bold" fill="#f57f17" style="cursor: pointer;">正方形 ⭐</text>
-                    
-                    <!-- 包含关系说明 -->
-                    <g id="relationship-explanations">
-                        <rect x="20" y="380" width="660" height="60" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="8"/>
-                        <text x="30" y="400" font-size="14" font-weight="bold" fill="#333">層次包含關係說明：</text>
-                        <text x="30" y="418" font-size="11" fill="#666" class="explanation-text">• 一般四邊形 → 分為 不規則四邊形 和 梯形</text>
-                        <text x="30" y="432" font-size="11" fill="#666" class="explanation-text">• 梯形 → 分為 一般梯形（僅一組對邊平行） 和 平行四邊形（兩組對邊都平行）</text>
-                        <text x="380" y="418" font-size="11" fill="#666" class="explanation-text">• 平行四邊形 → 分為 一般平行四邊形 和 特殊平行四邊形</text>
-                        <text x="380" y="432" font-size="11" fill="#666" class="explanation-text">• 特殊平行四邊形 → 包含 長方形、菱形 和 它們的交集 正方形</text>
-                    </g>
+                    <rect x="400" y="270" width="60" height="60" fill="url(#squareGrad)" stroke="#8bbe82" stroke-width="2" rx="2" data-shape="square"/>
+                    <text x="430" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="#8bbe82" style="cursor: pointer;">正方形</text>                    
                 </svg>
                 
                 <!-- 动画控制按钮区域 -->
