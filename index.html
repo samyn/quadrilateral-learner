@@ -198,12 +198,19 @@
         <div class="challenge-header">
             <h2>🎯 四邊形知識挑戰</h2>
             <div class="challenge-progress">
-                <span id="question-counter">第 1 題 / 15 題</span>
+                <span id="question-counter">第 1 題 / 10 題</span>
                 <div class="score-display">
                     <span>正確: <span id="correct-count">0</span></span>
                     <span>錯誤: <span id="wrong-count">0</span></span>
                 </div>
             </div>
+        </div>
+
+        <!-- 智能出题提示 -->
+        <div class="progress-hint">
+            <span class="hint-icon">💡</span>
+            <strong>智能出題系統：</strong>
+            我們會根據你的學習進度智能選擇題目。答錯的題目會重複出現，直到你完全掌握為止！
         </div>
 
         <div class="question-area shape-hidden">
@@ -302,15 +309,16 @@
             <h2>🎉 挑戰完成！</h2>
             <div class="final-score">
                 <div class="score-circle">
-                    <span id="final-score-text">0/15</span>
+                    <span id="final-score-text">0/10</span>
                     <div class="score-label">答對題數</div>
                 </div>
             </div>
+            <!-- 总体进度信息将由JavaScript动态添加 -->
         </div>
 
         <div class="result-content">
             <div class="performance-summary">
-                <h3>成績分析</h3>
+                <h3>本次成績分析</h3>
                 <div class="performance-stats">
                     <div class="stat-item">
                         <span class="stat-label">正確率</span>
@@ -352,6 +360,12 @@
         </div>
     </div>
 
+    <!-- Cookie状态提示（可选，用于调试） -->
+    <div id="cookie-status" class="cookie-status" style="display: none;">
+        <div id="cookie-status-text">進度已保存</div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html>
+</html></document_content>
+</invoke>

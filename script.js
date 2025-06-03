@@ -145,13 +145,9 @@ let challengeState = {
     currentQuestionIndex: 0,
     score: 0,
     wrongQuestions: [],
-    totalQuestions: 0,
+    totalQuestions: 10, // 每次挑战10道题
     isAnswered: false
 };
-
-// 题目数据库（从JSON文件加载）
-let questionBank = [];
-let practicesData = null;
 
 // 变换关系定义
 const transformationPaths = {
@@ -174,6 +170,215 @@ const transformationPaths = {
     'rhombus-trapezoid': '先改變邊長變為平行四邊形，再讓一組對邊不再平行',
     'square-trapezoid': '先退化為長方形或菱形，再變為平行四邊形，最後讓一組對邊不再平行',
     'square-parallelogram': '改變邊長比例或角度，失去正方形的完美對稱性'
+};
+
+// 题目数据库
+let questionBank = [];
+let practicesData = null;
+
+// Cookie 管理函数
+const CookieManager = {
+    /**
+     * 设置Cookie
+     */
+    set(name, value, days = 365) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + JSON.stringify(value) + ";" + expires + ";path=/";
+    },
+
+    /**
+     * 获取Cookie
+     */
+    get(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) {
+                try {
+                    return JSON.parse(c.substring(nameEQ.length, c.length));
+                } catch (e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    },
+
+    /**
+     * 删除Cookie
+     */
+    remove(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+};
+
+// 答题记录管理
+const ProgressManager = {
+    COOKIE_NAME: 'quadrilateral_progress',
+
+    /**
+     * 获取学习进度
+     */
+    getProgress() {
+        const progress = CookieManager.get(this.COOKIE_NAME);
+        if (!progress) {
+            return {
+                answeredQuestions: [], // 已答过的题目ID
+                correctQuestions: [],  // 答对的题目ID
+                wrongQuestions: [],    // 答错的题目ID（会重复出现直到答对）
+                challengeCount: 0,     // 挑战次数
+                totalCorrect: 0,       // 总答对数
+                totalWrong: 0,         // 总答错数
+                lastChallengeDate: null
+            };
+        }
+        return progress;
+    },
+
+    /**
+     * 保存学习进度
+     */
+    saveProgress(progress) {
+        CookieManager.set(this.COOKIE_NAME, progress);
+    },
+
+    /**
+     * 记录答题结果
+     */
+    recordAnswer(questionId, isCorrect) {
+        const progress = this.getProgress();
+        
+        // 记录已答过的题目
+        if (!progress.answeredQuestions.includes(questionId)) {
+            progress.answeredQuestions.push(questionId);
+        }
+
+        if (isCorrect) {
+            // 答对了
+            if (!progress.correctQuestions.includes(questionId)) {
+                progress.correctQuestions.push(questionId);
+                progress.totalCorrect++;
+            }
+            // 如果之前答错过，现在答对了，从错题列表中移除
+            const wrongIndex = progress.wrongQuestions.indexOf(questionId);
+            if (wrongIndex > -1) {
+                progress.wrongQuestions.splice(wrongIndex, 1);
+            }
+        } else {
+            // 答错了
+            if (!progress.wrongQuestions.includes(questionId)) {
+                progress.wrongQuestions.push(questionId);
+                progress.totalWrong++;
+            }
+        }
+
+        this.saveProgress(progress);
+        return progress;
+    },
+
+    /**
+     * 开始新的挑战
+     */
+    startChallenge() {
+        const progress = this.getProgress();
+        progress.challengeCount++;
+        progress.lastChallengeDate = new Date().toISOString();
+        this.saveProgress(progress);
+        return progress;
+    },
+
+    /**
+     * 检查是否完成所有挑战
+     */
+    isAllCompleted() {
+        const progress = this.getProgress();
+        // 所有22道题都答对且错题列表为空
+        return progress.correctQuestions.length === 22 && progress.wrongQuestions.length === 0;
+    },
+
+    /**
+     * 重置进度
+     */
+    resetProgress() {
+        CookieManager.remove(this.COOKIE_NAME);
+    }
+};
+
+// 智能出题算法
+const QuestionSelector = {
+    /**
+     * 选择本次挑战的题目
+     */
+    selectQuestionsForChallenge() {
+        const progress = ProgressManager.getProgress();
+        const allQuestions = [...questionBank];
+        const questionsPerChallenge = 10;
+
+        // 如果已经完成所有题目
+        if (ProgressManager.isAllCompleted()) {
+            console.log('恭喜！已完成所有挑战！');
+            // 返回随机10道题作为复习
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, questionsPerChallenge);
+        }
+
+        // 获取不同类型的题目
+        const unansweredQuestions = allQuestions.filter(q => !progress.answeredQuestions.includes(q.id));
+        const wrongQuestions = allQuestions.filter(q => progress.wrongQuestions.includes(q.id));
+        const correctQuestions = allQuestions.filter(q => progress.correctQuestions.includes(q.id));
+
+        console.log('题目分布:', {
+            total: allQuestions.length,
+            unanswered: unansweredQuestions.length,
+            wrong: wrongQuestions.length,
+            correct: correctQuestions.length
+        });
+
+        let selectedQuestions = [];
+
+        // 优先级1: 错题（必须全部包含，直到答对为止）
+        selectedQuestions = [...wrongQuestions];
+        console.log('添加错题:', selectedQuestions.length);
+
+        // 优先级2: 未答过的题目
+        const remainingSlots = questionsPerChallenge - selectedQuestions.length;
+        if (remainingSlots > 0 && unansweredQuestions.length > 0) {
+            const shuffledUnanswered = [...unansweredQuestions].sort(() => Math.random() - 0.5);
+            const toAdd = Math.min(remainingSlots, shuffledUnanswered.length);
+            selectedQuestions = selectedQuestions.concat(shuffledUnanswered.slice(0, toAdd));
+            console.log('添加未答题目:', toAdd);
+        }
+
+        // 优先级3: 如果还不够10道，从已答对的题目中补充
+        const stillNeed = questionsPerChallenge - selectedQuestions.length;
+        if (stillNeed > 0 && correctQuestions.length > 0) {
+            const shuffledCorrect = [...correctQuestions].sort(() => Math.random() - 0.5);
+            const toAdd = Math.min(stillNeed, shuffledCorrect.length);
+            selectedQuestions = selectedQuestions.concat(shuffledCorrect.slice(0, toAdd));
+            console.log('添加已答对题目:', toAdd);
+        }
+
+        // 如果还是不够（极端情况），用全部题目补充
+        if (selectedQuestions.length < questionsPerChallenge) {
+            const shuffledAll = [...allQuestions].sort(() => Math.random() - 0.5);
+            const needed = questionsPerChallenge - selectedQuestions.length;
+            for (let i = 0; i < shuffledAll.length && selectedQuestions.length < questionsPerChallenge; i++) {
+                if (!selectedQuestions.find(q => q.id === shuffledAll[i].id)) {
+                    selectedQuestions.push(shuffledAll[i]);
+                }
+            }
+        }
+
+        // 最终随机打乱顺序
+        selectedQuestions = selectedQuestions.sort(() => Math.random() - 0.5);
+
+        console.log('最终选择题目:', selectedQuestions.length, selectedQuestions.map(q => q.id));
+        return selectedQuestions.slice(0, questionsPerChallenge);
+    }
 };
 
 /**
@@ -1316,6 +1521,7 @@ async function loadPracticesData() {
 function getDefaultQuestions() {
     return [
         {
+            id: 1,
             shape: 'square',
             question: '正方形的四條邊都相等',
             answer: true,
@@ -1325,6 +1531,7 @@ function getDefaultQuestions() {
             knowledgePoint: '正方形的邊長特性'
         },
         {
+            id: 2,
             shape: 'rectangle',
             question: '長方形的四條邊都相等',
             answer: false,
@@ -1334,6 +1541,7 @@ function getDefaultQuestions() {
             knowledgePoint: '長方形的邊長特性'
         },
         {
+            id: 3,
             shape: 'rhombus',
             question: '菱形的四條邊都相等',
             answer: true,
@@ -1343,6 +1551,7 @@ function getDefaultQuestions() {
             knowledgePoint: '菱形的邊長特性'
         },
         {
+            id: 4,
             shape: 'parallelogram',
             question: '平行四邊形的對邊平行',
             answer: true,
@@ -1352,6 +1561,7 @@ function getDefaultQuestions() {
             knowledgePoint: '平行四邊形的平行特性'
         },
         {
+            id: 5,
             shape: 'trapezoid',
             question: '梯形有一組對邊平行',
             answer: true,
@@ -1522,13 +1732,25 @@ function exitChallenge() {
  * 初始化挑战
  */
 function initializeChallenge() {
+    // 开始新挑战，更新进度
+    const progress = ProgressManager.startChallenge();
+    
+    // 检查是否完成所有挑战
+    if (ProgressManager.isAllCompleted()) {
+        showCompletionMessage();
+        return;
+    }
+    
+    // 智能选择题目
+    const selectedQuestions = QuestionSelector.selectQuestionsForChallenge();
+    
     // 重置挑战状态
     challengeState = {
-        questions: [...questionBank].sort(() => Math.random() - 0.5), // 随机打乱题目顺序
+        questions: selectedQuestions,
         currentQuestionIndex: 0,
         score: 0,
         wrongQuestions: [],
-        totalQuestions: questionBank.length,
+        totalQuestions: selectedQuestions.length,
         isAnswered: false
     };
     
@@ -1541,6 +1763,36 @@ function initializeChallenge() {
     // 更新UI
     updateChallengeProgress();
     displayCurrentQuestion();
+}
+
+/**
+ * 显示完成消息
+ */
+function showCompletionMessage() {
+    const challengeContainer = document.querySelector('.challenge-container');
+    challengeContainer.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 80px; margin-bottom: 30px;">🎉</div>
+            <h2 style="color: #4CAF50; margin-bottom: 20px; font-size: 2.5em;">挑戰完成！</h2>
+            <p style="font-size: 1.4em; color: #666; margin-bottom: 30px;">
+                恭喜你已經完成所有22道題目的挑戰！<br>
+                你對四邊形的知識掌握得非常好！
+            </p>
+            <div style="margin: 30px 0;">
+                <div style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; display: inline-block; padding: 15px 30px; border-radius: 25px; font-size: 1.2em; font-weight: bold;">
+                    大師級別 🏆
+                </div>
+            </div>
+            <div style="margin-top: 40px;">
+                <button onclick="ProgressManager.resetProgress(); initializeChallenge();" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-right: 15px;">
+                    🔄 重新開始所有挑戰
+                </button>
+                <button onclick="exitChallenge();" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                    🏠 返回學習
+                </button>
+            </div>
+        </div>
+    `;
 }
 
 /**
@@ -1844,7 +2096,7 @@ function highlightChallengeVisualElement(visualType) {
 }
 
 /**
- * 处理答题 - 核心修改：答对直接进入下一题，答错显示图形和提示
+ * 处理答题 - 核心修改：答对直接进入下一题，答错显示图形和提示，同时记录到Cookie
  */
 function handleAnswer(selectedAnswer) {
     if (challengeState.isAnswered) return;
@@ -1858,6 +2110,9 @@ function handleAnswer(selectedAnswer) {
         btn.disabled = true;
         btn.style.opacity = '0.6';
     });
+    
+    // 记录答题结果到Cookie
+    ProgressManager.recordAnswer(question.id, isCorrect);
     
     // 更新分数和错题记录
     if (isCorrect) {
@@ -1990,7 +2245,7 @@ function showChallengeResult() {
 }
 
 /**
- * 更新结果显示
+ * 更新结果显示 - 增强版本，包含总体进度信息
  */
 function updateResultDisplay() {
     const finalScoreText = document.getElementById('final-score-text');
@@ -2001,6 +2256,9 @@ function updateResultDisplay() {
     const wrongQuestionsList = document.getElementById('wrong-questions-list');
     const knowledgePointsSummary = document.getElementById('knowledge-points-summary');
     const knowledgePointsList = document.getElementById('knowledge-points-list');
+    
+    // 获取总体进度
+    const progress = ProgressManager.getProgress();
     
     // 基本统计
     const accuracy = Math.round((challengeState.score / challengeState.totalQuestions) * 100);
@@ -2018,6 +2276,48 @@ function updateResultDisplay() {
     } else {
         scoreCircle.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
     }
+    
+    // 在结果头部添加总体进度信息
+    const resultHeader = document.querySelector('.result-header');
+    const existingProgress = resultHeader.querySelector('.overall-progress');
+    if (existingProgress) {
+        existingProgress.remove();
+    }
+    
+    const overallProgressDiv = document.createElement('div');
+    overallProgressDiv.className = 'overall-progress';
+    overallProgressDiv.style.cssText = `
+        background: #f8f9ff;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    `;
+    
+    const completionRate = Math.round((progress.correctQuestions.length / 22) * 100);
+    overallProgressDiv.innerHTML = `
+        <h3 style="margin-bottom: 15px; color: #333;">📊 總體學習進度</h3>
+        <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 15px;">
+            <div>
+                <span style="display: block; font-size: 24px; font-weight: bold; color: #4CAF50;">${progress.correctQuestions.length}/22</span>
+                <span style="font-size: 14px; color: #666;">已掌握題目</span>
+            </div>
+            <div>
+                <span style="display: block; font-size: 24px; font-weight: bold; color: #FF9800;">${progress.wrongQuestions.length}</span>
+                <span style="font-size: 14px; color: #666;">需要復習</span>
+            </div>
+            <div>
+                <span style="display: block; font-size: 24px; font-weight: bold; color: #667eea;">${progress.challengeCount}</span>
+                <span style="font-size: 14px; color: #666;">挑戰次數</span>
+            </div>
+        </div>
+        <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden; height: 10px; margin-bottom: 10px;">
+            <div style="background: linear-gradient(90deg, #4CAF50, #45a049); height: 100%; width: ${completionRate}%; transition: width 0.5s ease;"></div>
+        </div>
+        <span style="font-size: 16px; font-weight: bold; color: #333;">完成度: ${completionRate}%</span>
+    `;
+    
+    resultHeader.appendChild(overallProgressDiv);
     
     // 错题复习
     if (challengeState.wrongQuestions.length > 0) {
