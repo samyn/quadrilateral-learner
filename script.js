@@ -136,12 +136,6 @@ let animationState = {
     isActive: false
 };
 
-// 形状交互状态
-let interactionState = {
-    sourceShape: null,
-    isSelectingTarget: false
-};
-
 // 变换关系定义
 const transformationPaths = {
     'trapezoid-parallelogram': '讓另一組對邊也變平行',
@@ -779,6 +773,164 @@ function displayShape(shapeName) {
     });
 
     currentShape = shapeName;
+    
+    // 更新变换区域显示
+    updateTransformationArea(shapeName);
+}
+
+/**
+ * 更新变换区域显示
+ * @param {string} currentShapeName - 当前形状名称
+ */
+function updateTransformationArea(currentShapeName) {
+    const networkContainer = document.querySelector('.network-container');
+    const relationshipInfo = document.querySelector('.relationship-info');
+    const relationshipText = document.getElementById('relationship-text');
+    const animateBtn = document.getElementById('animate-transformation-btn');
+    const progressContainer = document.querySelector('.transformation-progress');
+    
+    // 重置状态
+    resetTransformationState();
+    
+    // 清空现有节点
+    networkContainer.innerHTML = '';
+    
+    // 获取所有形状，排除当前形状
+    const allShapes = ['trapezoid', 'parallelogram', 'rectangle', 'rhombus', 'square'];
+    const availableShapes = allShapes.filter(shape => shape !== currentShapeName);
+    
+    // 动态创建形状节点
+    availableShapes.forEach((shapeName, index) => {
+        setTimeout(() => {
+            const shapeNode = document.createElement('div');
+            shapeNode.className = `shape-node ${shapeName}`;
+            shapeNode.dataset.shape = shapeName;
+            
+            // 设置节点样式和内容（确保正确应用CSS变换）
+            switch(shapeName) {
+                case 'trapezoid':
+                    shapeNode.textContent = '梯形';
+                    break;
+                case 'parallelogram':
+                    shapeNode.innerHTML = '<span>平行四邊形</span>';
+                    break;
+                case 'rectangle':
+                    shapeNode.textContent = '長方形';
+                    break;
+                case 'rhombus':
+                    shapeNode.innerHTML = '<span>菱形</span>';
+                    break;
+                case 'square':
+                    shapeNode.textContent = '正方形';
+                    break;
+            }
+            
+            // 添加点击事件
+            shapeNode.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleShapeTransformation(currentShapeName, shapeName);
+            });
+            
+            // 添加动画效果（避免覆盖形状特定的变换样式）
+            shapeNode.style.opacity = '0';
+            shapeNode.style.transition = 'all 0.3s ease';
+            
+            // 为特殊形状保留原有变换，只添加缩放
+            if (shapeName === 'parallelogram') {
+                shapeNode.style.transform = 'skewX(-20deg) scale(0.8)';
+            } else if (shapeName === 'rhombus') {
+                shapeNode.style.transform = 'rotate(45deg) scale(0.8)';
+            } else {
+                shapeNode.style.transform = 'scale(0.8)';
+            }
+            
+            networkContainer.appendChild(shapeNode);
+            
+            // 触发动画（恢复到正常状态）
+            setTimeout(() => {
+                shapeNode.style.opacity = '1';
+                if (shapeName === 'parallelogram') {
+                    shapeNode.style.transform = 'skewX(-20deg) scale(1)';
+                } else if (shapeName === 'rhombus') {
+                    shapeNode.style.transform = 'rotate(45deg) scale(1)';
+                } else {
+                    shapeNode.style.transform = 'scale(1)';
+                }
+            }, 50);
+            
+        }, index * 150);
+    });
+    
+    // 更新提示信息
+    relationshipInfo.classList.remove('hidden', 'transformation');
+    relationshipText.innerHTML = `💡 當前形狀：<strong>${shapes[currentShapeName].title}</strong><br>點擊下方任一形狀查看變換方式`;
+}
+
+/**
+ * 处理形状变换
+ * @param {string} sourceShape - 源形状
+ * @param {string} targetShape - 目标形状
+ */
+function handleShapeTransformation(sourceShape, targetShape) {
+    const description = getTransformationDescription(sourceShape, targetShape);
+    const relationshipInfo = document.querySelector('.relationship-info');
+    const relationshipText = document.getElementById('relationship-text');
+    const animateBtn = document.getElementById('animate-transformation-btn');
+    
+    // 高亮选中的目标形状
+    document.querySelectorAll('.shape-node').forEach(node => {
+        node.classList.remove('active');
+        node.style.backgroundColor = '';
+    });
+    
+    const targetNode = document.querySelector(`.shape-node[data-shape="${targetShape}"]`);
+    if (targetNode) {
+        targetNode.classList.add('active');
+        targetNode.style.backgroundColor = '#4CAF50';
+    }
+    
+    // 更新提示信息
+    relationshipInfo.classList.remove('hidden');
+    relationshipInfo.classList.add('transformation');
+    relationshipText.innerHTML = `
+        <strong>${shapes[sourceShape].title} → ${shapes[targetShape].title}</strong><br>
+        ${description}
+    `;
+    
+    // 显示动画按钮
+    animateBtn.style.display = 'inline-block';
+    animateBtn.onclick = () => {
+        animateTransformation(sourceShape, targetShape);
+    };
+}
+
+/**
+ * 重置变换状态
+ */
+function resetTransformationState() {
+    const relationshipInfo = document.querySelector('.relationship-info');
+    const animateBtn = document.getElementById('animate-transformation-btn');
+    const progressContainer = document.querySelector('.transformation-progress');
+    
+    // 清除所有激活状态
+    document.querySelectorAll('.shape-node').forEach(node => {
+        node.classList.remove('active');
+        node.style.backgroundColor = '';
+    });
+    
+    // 隐藏动画按钮和进度条
+    animateBtn.style.display = 'none';
+    progressContainer.style.display = 'none';
+}
+
+/**
+ * 处理形状选择（简化版，主要用于顶部按钮）
+ * @param {string} shapeName - 形状名称
+ */
+function handleShapeSelection(shapeName) {
+    resetTransformationState();
+    updateActiveShape(shapeName);
+    displayShape(shapeName);
 }
 
 /**
@@ -971,8 +1123,7 @@ function displayShapeComparison(sourceShape, targetShape) {
         });
         
         backButton.addEventListener('click', () => {
-            resetShapeSelection();
-            displayShape(targetShape);
+            handleShapeSelection(targetShape);
         });
         
         propertiesList.appendChild(backButton);
@@ -1093,87 +1244,6 @@ function getTransformationDescription(sourceShape, targetShape) {
 }
 
 /**
- * 处理形状选择
- * @param {string} shapeName - 形状名称
- */
-function handleShapeSelection(shapeName) {
-    const shapeNode = document.querySelector(`.shape-node[data-shape="${shapeName}"]`);
-    
-    if (!interactionState.isSelectingTarget) {
-        resetShapeSelection();
-        interactionState.sourceShape = shapeName;
-        interactionState.isSelectingTarget = true;
-        
-        shapeNode.classList.add('active');
-        shapeNode.style.backgroundColor = '#4CAF50';
-        
-        const relationshipInfo = document.querySelector('.relationship-info');
-        const relationshipText = document.getElementById('relationship-text');
-        const animateBtn = document.getElementById('animate-transformation-btn');
-        
-        relationshipInfo.classList.remove('hidden');
-        relationshipInfo.classList.remove('transformation');
-        relationshipText.textContent = `✨ 已選擇 ${shapes[shapeName].title}，請點擊目標形狀查看變換方式`;
-        animateBtn.style.display = 'none';
-        
-    } else if (shapeName === interactionState.sourceShape) {
-        resetShapeSelection();
-        
-    } else {
-        const sourceShape = interactionState.sourceShape;
-        const targetShape = shapeName;
-        
-        shapeNode.classList.add('active');
-        shapeNode.style.backgroundColor = '#FF6B6B';
-        
-        const description = getTransformationDescription(sourceShape, targetShape);
-        const relationshipInfo = document.querySelector('.relationship-info');
-        const relationshipText = document.getElementById('relationship-text');
-        const animateBtn = document.getElementById('animate-transformation-btn');
-        
-        relationshipInfo.classList.remove('hidden');
-        relationshipInfo.classList.add('transformation');
-        relationshipText.innerHTML = `
-            <strong>${shapes[sourceShape].title} → ${shapes[targetShape].title}</strong><br>
-            ${description}
-        `;
-        
-        // 显示动画按钮
-        animateBtn.style.display = 'inline-block';
-        animateBtn.onclick = () => {
-            animateTransformation(sourceShape, targetShape);
-        };
-        
-        interactionState.isSelectingTarget = false;
-        interactionState.sourceShape = null;
-    }
-}
-
-/**
- * 重置形状选择状态
- */
-function resetShapeSelection() {
-    interactionState.sourceShape = null;
-    interactionState.isSelectingTarget = false;
-    
-    document.querySelectorAll('.shape-node').forEach(node => {
-        node.classList.remove('active');
-        node.style.backgroundColor = '';
-    });
-    
-    const relationshipInfo = document.querySelector('.relationship-info');
-    const relationshipText = document.getElementById('relationship-text');
-    const animateBtn = document.getElementById('animate-transformation-btn');
-    const progressContainer = document.querySelector('.transformation-progress');
-    
-    relationshipInfo.classList.add('hidden');
-    relationshipInfo.classList.remove('transformation');
-    relationshipText.textContent = '💡 點擊一個形狀作為起點，再點擊另一個形狀查看變換方式';
-    animateBtn.style.display = 'none';
-    progressContainer.style.display = 'none';
-}
-
-/**
  * 更新活动形状
  * @param {string} shapeName - 形状名称
  */
@@ -1188,20 +1258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 形状按钮事件监听
     document.querySelectorAll('.shape-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            resetShapeSelection();
-            updateActiveShape(btn.dataset.shape);
-            displayShape(btn.dataset.shape);
-        });
-    });
-
-    // 形状节点事件监听
-    document.querySelectorAll('.shape-node').forEach(node => {
-        node.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            handleShapeSelection(node.dataset.shape);
-            updateActiveShape(node.dataset.shape);
-            displayShape(node.dataset.shape);
+            handleShapeSelection(btn.dataset.shape);
         });
     });
 
@@ -1214,9 +1271,8 @@ document.addEventListener('DOMContentLoaded', function() {
             !e.target.closest('#animate-transformation-btn') &&
             !e.target.closest('.transformation-progress')) {
             
-            if (interactionState.isSelectingTarget) {
-                resetShapeSelection();
-            }
+            // 重置变换区域状态
+            resetTransformationState();
             
             document.querySelectorAll('.property').forEach(p => {
                 p.classList.remove('highlight');
@@ -1234,5 +1290,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化显示
     displayShape('square');
     updateActiveShape('square');
-    resetShapeSelection();
 });

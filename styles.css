@@ -959,4 +959,13 @@ body {
     .shape-node.rhombus span {
         font-size: 11px;
     }
+
+.shape-node.rhombus { 
+    background: #f8bbd9; 
+    color: #333; 
+    width: 70px;
+    height: 70px;
+    transform: skewX(-15deg);
+    border-radius: 0;
+}
 }
