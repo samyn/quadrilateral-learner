@@ -863,7 +863,7 @@ function updateTransformationArea(currentShapeName) {
     
     // 更新提示信息
     relationshipInfo.classList.remove('hidden', 'transformation');
-    relationshipText.innerHTML = `💡 當前形狀：<strong>${shapes[currentShapeName].title}</strong><br>點擊下方任一形狀查看變換方式`;
+    relationshipText.innerHTML = `點擊下方任一形狀查看變換方式`;
 }
 
 /**
