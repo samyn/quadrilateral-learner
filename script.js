@@ -231,6 +231,49 @@ function comparePropertyLevels(sourceProp, targetProp) {
 }
 
 /**
+ * 获取层次关系说明文本
+ * @param {Object} sourceProp - 源特性
+ * @param {Object} targetProp - 目标特性
+ * @param {string} category - 特性类别
+ * @returns {string} 关系说明文本
+ */
+function getRelationshipInfo(sourceProp, targetProp, category) {
+    if (!sourceProp || !targetProp || sourceProp.level === targetProp.level) {
+        return '';
+    }
+    
+    if (category === 'sides') {
+        if (sourceProp.level === 'medium' && targetProp.level === 'highest') {
+            return '💡 "四條邊都相等" 包含了 "對邊相等"';
+        } else if (sourceProp.level === 'highest' && targetProp.level === 'medium') {
+            return '⚠️ 從完全規則退化為部分規則';
+        }
+    } else if (category === 'parallel') {
+        if (sourceProp.level === 'partial' && targetProp.level === 'basic') {
+            return '💡 從一組平行提升為兩組平行';
+        } else if (sourceProp.level === 'basic' && targetProp.level === 'partial') {
+            return '⚠️ 從兩組平行退化為一組平行';
+        }
+    } else if (category === 'angles') {
+        if (sourceProp.level === 'medium' && targetProp.level === 'highest') {
+            return '💡 從對角相等提升為四個直角';
+        } else if (sourceProp.level === 'highest' && targetProp.level === 'medium') {
+            return '⚠️ 從四個直角退化為對角相等';
+        }
+    } else if (category === 'diagonals') {
+        if (sourceProp.level === 'low' && targetProp.level === 'medium') {
+            return '💡 對角線特性得到增強';
+        } else if (sourceProp.level === 'medium' && targetProp.level === 'highest') {
+            return '💡 對角線達到最完美狀態';
+        } else if (sourceProp.level === 'highest' && targetProp.level === 'medium') {
+            return '⚠️ 對角線特性有所減弱';
+        }
+    }
+    
+    return '';
+}
+
+/**
  * 更新视觉标记
  * @param {string} shapeName - 形状名称
  */
@@ -739,7 +782,7 @@ function displayShape(shapeName) {
 }
 
 /**
- * 显示形状对比 - 改进版本，按类别分组显示
+ * 显示形状对比 - 改进版本，将关系信息显示在类别标题中
  * @param {string} sourceShape - 源形状
  * @param {string} targetShape - 目标形状
  */
@@ -772,28 +815,27 @@ function displayShapeComparison(sourceShape, targetShape) {
         // 如果该类别下两个形状都没有特性，则跳过
         if (!sourceProp && !targetProp) return;
         
+        // 获取关系信息
+        const relationshipInfo = getRelationshipInfo(sourceProp, targetProp, category);
+        
         setTimeout(() => {
-            // 创建类别标题
-            const categoryHeader = document.createElement('div');
-            categoryHeader.style.cssText = `
-                margin: 25px 0 15px 0;
-                padding: 12px;
+            // 创建合并的类别比较块
+            const comparisonResult = comparePropertyLevels(sourceProp, targetProp);
+            
+            const categoryBlock = document.createElement('div');
+            categoryBlock.className = `property-comparison category-${category}`;
+            categoryBlock.style.cssText = `
+                margin: 15px 0;
                 background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
-                border-radius: 10px;
-                border-left: 4px solid #4CAF50;
-                font-weight: bold;
-                font-size: 15px;
-                color: #333;
+                border-radius: 12px;
+                border-left: 4px solid ${comparisonResult.color};
+                box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+                transition: all 0.3s ease;
                 opacity: 0;
                 transform: translateY(20px);
                 animation: slideInCategory 0.6s ease forwards;
                 animation-delay: ${categoryIndex * 0.2}s;
-            `;
-            
-            categoryHeader.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <span>${categoryInfo.name}</span>
-                </div>
+                overflow: hidden;
             `;
             
             // 添加动画样式
@@ -816,30 +858,6 @@ function displayShapeComparison(sourceShape, targetShape) {
                 `;
                 document.head.appendChild(style);
             }
-            
-            propertiesList.appendChild(categoryHeader);
-            
-            // 创建该类别的比较行
-            const comparisonResult = comparePropertyLevels(sourceProp, targetProp);
-            
-            const comparisonRow = document.createElement('div');
-            comparisonRow.className = `property-comparison category-${category}`;
-            comparisonRow.style.cssText = `
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-                background: white;
-                border-radius: 10px;
-                padding: 15px;
-                box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-                border-left: 3px solid ${comparisonResult.color};
-                transition: all 0.3s ease;
-                opacity: 0;
-                transform: translateY(20px);
-                animation: slideInComparison 0.5s ease forwards;
-                animation-delay: ${categoryIndex * 0.2 + 0.3}s;
-                position: relative;
-            `;
             
             // 创建比较内容
             const sourceContent = sourceProp ? `
@@ -872,48 +890,43 @@ function displayShapeComparison(sourceShape, targetShape) {
                 </div>
             `;
             
-            // 显示层次关系和包含关系
-            let relationshipInfo = '';
-            if (sourceProp && targetProp && sourceProp.level !== targetProp.level) {
-                if (sourceProp.level === 'medium' && targetProp.level === 'highest') {
-                    relationshipInfo = '<div style="font-size: 10px; color: #4CAF50; margin-top: 3px;">💡 "四條邊都相等" 包含了 "對邊相等"</div>';
-                } else if (sourceProp.level === 'highest' && targetProp.level === 'medium') {
-                    relationshipInfo = '<div style="font-size: 10px; color: #FF9800; margin-top: 3px;">⚠️ 從完全規則退化為部分規則</div>';
-                } else if (sourceProp.level === 'partial' && targetProp.level === 'basic') {
-                    relationshipInfo = '<div style="font-size: 10px; color: #4CAF50; margin-top: 3px;">💡 從一組平行提升為兩組平行</div>';
-                }
-            }
-            
-            comparisonRow.innerHTML = `
-                <div style="flex: 1; padding-right: 15px;">
-                    ${sourceContent}
-                    ${relationshipInfo && sourceProp ? relationshipInfo : ''}
-                </div>
-                <div style="flex: 0 0 80px; text-align: center;">
-                    <div style="background: rgba(255,255,255,0.8); color: ${comparisonResult.color}; border: none; border-radius: 20px; padding: 8px 12px; font-size: 16px;">
-                        ${comparisonResult.icon}
-                    </div>
-                    <div style="font-size: 10px; color: ${comparisonResult.color}; margin-top: 4px; font-weight: bold;">
-                        ${comparisonResult.description}
+            categoryBlock.innerHTML = `
+                <!-- 类别标题区域 -->
+                <div style="padding: 12px 15px 8px 15px; border-bottom: 1px solid rgba(255,255,255,0.5);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-weight: bold; font-size: 15px; color: #333;">${categoryInfo.name}</span>
+                        ${relationshipInfo ? `<span style="font-size: 12px; color: #666; font-weight: normal;">${relationshipInfo}</span>` : ''}
                     </div>
                 </div>
-                <div style="flex: 1; padding-left: 15px;">
-                    ${targetContent}
-                    ${relationshipInfo && targetProp ? relationshipInfo : ''}
+                
+                <!-- 比较内容区域 -->
+                <div style="display: flex; align-items: center; padding: 15px;">
+                    <div style="flex: 1; padding-right: 15px;">
+                        ${sourceContent}
+                    </div>
+                    <div style="flex: 0 0 80px; text-align: center;">
+                        <div style="background: rgba(255,255,255,0.9); color: ${comparisonResult.color}; border: none; border-radius: 20px; padding: 8px 12px; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            ${comparisonResult.icon}
+                        </div>
+                        <div style="font-size: 10px; color: ${comparisonResult.color}; margin-top: 4px; font-weight: bold;">
+                            ${comparisonResult.description}
+                        </div>
+                    </div>
+                    <div style="flex: 1; padding-left: 15px;">
+                        ${targetContent}
+                    </div>
                 </div>
             `;
             
             // 添加点击高亮功能
-            comparisonRow.addEventListener('click', () => {
-                document.querySelectorAll('.property-comparison').forEach(row => {
-                    row.style.background = 'white';
-                    row.style.transform = 'scale(1)';
-                    row.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
+            categoryBlock.addEventListener('click', () => {
+                document.querySelectorAll('.property-comparison').forEach(block => {
+                    block.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
+                    block.style.transform = 'scale(1)';
                 });
                 
-                comparisonRow.style.background = '#f0f8ff';
-                comparisonRow.style.transform = 'scale(1.02)';
-                comparisonRow.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                categoryBlock.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                categoryBlock.style.transform = 'scale(1.02)';
                 
                 // 高亮对应的视觉元素
                 if (targetProp && targetProp.visual) {
@@ -921,7 +934,7 @@ function displayShapeComparison(sourceShape, targetShape) {
                 }
             });
             
-            propertiesList.appendChild(comparisonRow);
+            propertiesList.appendChild(categoryBlock);
             
         }, categoryIndex * 300);
     });
@@ -944,7 +957,7 @@ function displayShapeComparison(sourceShape, targetShape) {
             opacity: 0;
             transform: translateY(20px);
             animation: slideInComparison 0.5s ease forwards;
-            animation-delay: ${categories.length * 0.3 + 0.5}s;
+            animation-delay: ${categories.length * 0.3}s;
         `;
         
         backButton.addEventListener('mouseenter', () => {
@@ -963,7 +976,7 @@ function displayShapeComparison(sourceShape, targetShape) {
         });
         
         propertiesList.appendChild(backButton);
-    }, categories.length * 300 + 500);
+    }, categories.length * 300);
 }
 
 /**
@@ -1210,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             document.querySelectorAll('.property-comparison').forEach(row => {
-                row.style.background = 'white';
+                row.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
                 row.style.transform = 'scale(1)';
             });
             
