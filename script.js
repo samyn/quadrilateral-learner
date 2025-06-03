@@ -2473,13 +2473,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     const squareRect = document.querySelector('#relationship-svg rect[data-shape="square"]');
 
     // 長方形hover效果
-    if (rectangleRect && squareRect) {
+    if (rectangleRect && squareRect && rhombusRect) {
         rectangleRect.addEventListener('mouseenter', () => {
             squareRect.classList.add('dimmed');
+            rhombusRect.classList.add('dimmed'); // 新增：讓菱形也變暗
         });
         
         rectangleRect.addEventListener('mouseleave', () => {
             squareRect.classList.remove('dimmed');
+            rhombusRect.classList.remove('dimmed'); // 新增：恢復菱形
         });
     }
 
