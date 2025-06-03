@@ -1443,29 +1443,40 @@ function animateTransformation(sourceShape, targetShape) {
             displayShape(targetShape);
             updateActiveShape(targetShape);
             
-            // 恢复控制按钮状态，并设置按钮功能
+            // 短暂显示目标形状后回到源图形
             setTimeout(() => {
-                progressContainer.style.display = 'none';
-                progressBar.style.width = '0%';
+                // 回到源图形
+                polygon.setAttribute('points', shapes[sourceShape].points);
+                updateVisualMarkers(sourceShape);
                 
-                // 设置按钮文字和功能
-                animateBtn.textContent = '🔄 再次播放';
-                animateBtn.onclick = () => {
-                    animateTransformation(sourceShape, targetShape);
-                };
+                // 显示源图形的特性介绍
+                displayShape(sourceShape);
+                updateActiveShape(sourceShape);
                 
-                comparisonBtn.textContent = '📊 顯示特性對比';
-                comparisonBtn.onclick = () => {
-                    toggleComparison(sourceShape, targetShape);
-                };
-                
-                // 显示控制按钮
-                animationControls.style.display = 'flex';
-                
-                polygon.classList.remove('animating');
-                isAnimating = false;
-                animationState.isActive = false;
-            }, 500);
+                // 恢复控制按钮状态，并设置按钮功能
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                    
+                    // 设置按钮文字和功能
+                    animateBtn.textContent = '🔄 再次播放';
+                    animateBtn.onclick = () => {
+                        animateTransformation(sourceShape, targetShape);
+                    };
+                    
+                    comparisonBtn.textContent = '📊 顯示特性對比';
+                    comparisonBtn.onclick = () => {
+                        toggleComparison(sourceShape, targetShape);
+                    };
+                    
+                    // 显示控制按钮
+                    animationControls.style.display = 'flex';
+                    
+                    polygon.classList.remove('animating');
+                    isAnimating = false;
+                    animationState.isActive = false;
+                }, 300);
+            }, 800); // 显示目标形状800毫秒后回到源图形
         }
     }, stepDuration);
 }
