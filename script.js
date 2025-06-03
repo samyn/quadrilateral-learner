@@ -145,7 +145,7 @@ let challengeState = {
     currentQuestionIndex: 0,
     score: 0,
     wrongQuestions: [],
-    totalQuestions: 10, // 每次挑战10道题
+    totalQuestions: 10, // 每次挑战固定10道题
     isAnswered: false
 };
 
@@ -308,22 +308,20 @@ const ProgressManager = {
     }
 };
 
-// 智能出题算法
+// 智能出题算法 - 修改版：嚴格限制每次10道題
 const QuestionSelector = {
     /**
-     * 选择本次挑战的题目
+     * 选择本次挑战的题目 - 修改為嚴格限制10道題
      */
     selectQuestionsForChallenge() {
         const progress = ProgressManager.getProgress();
         const allQuestions = [...questionBank];
-        const questionsPerChallenge = 10;
+        const questionsPerChallenge = 10; // 嚴格限制每次10道題
 
-        // 如果已经完成所有题目
+        // 如果已经完成所有题目，顯示完成信息而不是出題
         if (ProgressManager.isAllCompleted()) {
-            console.log('恭喜！已完成所有挑战！');
-            // 返回随机10道题作为复习
-            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, questionsPerChallenge);
+            console.log('恭喜！已完成所有挑戰！');
+            return []; // 返回空數組，觸發完成流程
         }
 
         // 获取不同类型的题目
@@ -340,11 +338,15 @@ const QuestionSelector = {
 
         let selectedQuestions = [];
 
-        // 优先级1: 错题（必须全部包含，直到答对为止）
-        selectedQuestions = [...wrongQuestions];
-        console.log('添加错题:', selectedQuestions.length);
+        // 優先級1: 錯題（但最多只取10道）
+        if (wrongQuestions.length > 0) {
+            const shuffledWrong = [...wrongQuestions].sort(() => Math.random() - 0.5);
+            const wrongToAdd = Math.min(questionsPerChallenge, shuffledWrong.length);
+            selectedQuestions = selectedQuestions.concat(shuffledWrong.slice(0, wrongToAdd));
+            console.log('添加错题:', wrongToAdd);
+        }
 
-        // 优先级2: 未答过的题目
+        // 優先級2: 未答過的題目（補足到10道）
         const remainingSlots = questionsPerChallenge - selectedQuestions.length;
         if (remainingSlots > 0 && unansweredQuestions.length > 0) {
             const shuffledUnanswered = [...unansweredQuestions].sort(() => Math.random() - 0.5);
@@ -353,7 +355,7 @@ const QuestionSelector = {
             console.log('添加未答题目:', toAdd);
         }
 
-        // 优先级3: 如果还不够10道，从已答对的题目中补充
+        // 優先級3: 已答對的題目（補足到10道）
         const stillNeed = questionsPerChallenge - selectedQuestions.length;
         if (stillNeed > 0 && correctQuestions.length > 0) {
             const shuffledCorrect = [...correctQuestions].sort(() => Math.random() - 0.5);
@@ -362,22 +364,14 @@ const QuestionSelector = {
             console.log('添加已答对题目:', toAdd);
         }
 
-        // 如果还是不够（极端情况），用全部题目补充
-        if (selectedQuestions.length < questionsPerChallenge) {
-            const shuffledAll = [...allQuestions].sort(() => Math.random() - 0.5);
-            const needed = questionsPerChallenge - selectedQuestions.length;
-            for (let i = 0; i < shuffledAll.length && selectedQuestions.length < questionsPerChallenge; i++) {
-                if (!selectedQuestions.find(q => q.id === shuffledAll[i].id)) {
-                    selectedQuestions.push(shuffledAll[i]);
-                }
-            }
-        }
-
-        // 最终随机打乱顺序
+        // 最終隨機打亂順序
         selectedQuestions = selectedQuestions.sort(() => Math.random() - 0.5);
 
-        console.log('最终选择题目:', selectedQuestions.length, selectedQuestions.map(q => q.id));
-        return selectedQuestions.slice(0, questionsPerChallenge);
+        // 嚴格限制為10道題
+        const finalQuestions = selectedQuestions.slice(0, questionsPerChallenge);
+        console.log('最终选择题目:', finalQuestions.length, finalQuestions.map(q => q.id));
+        
+        return finalQuestions;
     }
 };
 
@@ -1729,7 +1723,7 @@ function exitChallenge() {
 }
 
 /**
- * 初始化挑战
+ * 初始化挑战 - 修改版：處理選擇0道題目的情況
  */
 function initializeChallenge() {
     // 开始新挑战，更新进度
@@ -1744,13 +1738,19 @@ function initializeChallenge() {
     // 智能选择题目
     const selectedQuestions = QuestionSelector.selectQuestionsForChallenge();
     
+    // 如果沒有選到題目（極端情況），顯示完成消息
+    if (selectedQuestions.length === 0) {
+        showCompletionMessage();
+        return;
+    }
+    
     // 重置挑战状态
     challengeState = {
         questions: selectedQuestions,
         currentQuestionIndex: 0,
         score: 0,
         wrongQuestions: [],
-        totalQuestions: selectedQuestions.length,
+        totalQuestions: selectedQuestions.length, // 使用實際選擇的題目數量
         isAnswered: false
     };
     
