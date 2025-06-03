@@ -1057,7 +1057,7 @@ function displayShapeComparison(sourceShape, targetShape) {
                         ${sourceContent}
                     </div>
                     <div style="flex: 0 0 80px; text-align: center;">
-                        <div style="background: rgba(255,255,255,0.9); color: ${comparisonResult.color}; border: none; border-radius: 20px; padding: 8px 12px; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="background: transparent; color: ${comparisonResult.color}; border: none; border-radius: 20px; padding: 8px 12px; font-size: 16px; box-shadow: none;">
                             ${comparisonResult.icon}
                         </div>
                         <div style="font-size: 10px; color: ${comparisonResult.color}; margin-top: 4px; font-weight: bold;">
