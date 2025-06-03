@@ -176,6 +176,11 @@ const transformationPaths = {
 let questionBank = [];
 let practicesData = null;
 
+// 获取题目总数的辅助函数
+function getTotalQuestionCount() {
+    return questionBank.length;
+}
+
 // Cookie 管理函数
 const CookieManager = {
     /**
@@ -292,12 +297,13 @@ const ProgressManager = {
     },
 
     /**
-     * 检查是否完成所有挑战
+     * 检查是否完成所有挑战 - 修正：使用动态题目总数
      */
     isAllCompleted() {
         const progress = this.getProgress();
-        // 所有22道题都答对且错题列表为空
-        return progress.correctQuestions.length === 22 && progress.wrongQuestions.length === 0;
+        const totalQuestions = getTotalQuestionCount();
+        // 所有题目都答对且错题列表为空
+        return progress.correctQuestions.length === totalQuestions && progress.wrongQuestions.length === 0;
     },
 
     /**
@@ -1777,16 +1783,17 @@ function initializeChallenge() {
 }
 
 /**
- * 显示完成消息
+ * 显示完成消息 - 修正：使用动态题目总数
  */
 function showCompletionMessage() {
+    const totalQuestions = getTotalQuestionCount();
     const challengeContainer = document.querySelector('.challenge-container');
     challengeContainer.innerHTML = `
         <div style="text-align: center; padding: 60px 20px;">
             <div style="font-size: 80px; margin-bottom: 30px;">🎉</div>
             <h2 style="color: #4CAF50; margin-bottom: 20px; font-size: 2.5em;">挑戰完成！</h2>
             <p style="font-size: 1.4em; color: #666; margin-bottom: 30px;">
-                恭喜你已經完成所有22道題目的挑戰！<br>
+                恭喜你已經完成所有${totalQuestions}道題目的挑戰！<br>
                 你對四邊形的知識掌握得非常好！
             </p>
             <div style="margin: 30px 0;">
@@ -2256,7 +2263,7 @@ function showChallengeResult() {
 }
 
 /**
- * 更新结果显示 - 增强版本，包含总体进度信息
+ * 更新结果显示 - 修正：使用动态题目总数
  */
 function updateResultDisplay() {
     const finalScoreText = document.getElementById('final-score-text');
@@ -2270,6 +2277,7 @@ function updateResultDisplay() {
     
     // 获取总体进度
     const progress = ProgressManager.getProgress();
+    const totalQuestions = getTotalQuestionCount(); // 使用动态题目总数
     
     // 基本统计
     const accuracy = Math.round((challengeState.score / challengeState.totalQuestions) * 100);
@@ -2288,7 +2296,7 @@ function updateResultDisplay() {
         scoreCircle.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
     }
     
-    // 在结果头部添加总体进度信息
+    // 在结果头部添加总体进度信息 - 修正：使用动态题目总数
     const resultHeader = document.querySelector('.result-header');
     const existingProgress = resultHeader.querySelector('.overall-progress');
     if (existingProgress) {
@@ -2305,12 +2313,12 @@ function updateResultDisplay() {
         text-align: center;
     `;
     
-    const completionRate = Math.round((progress.correctQuestions.length / 22) * 100);
+    const completionRate = Math.round((progress.correctQuestions.length / totalQuestions) * 100);
     overallProgressDiv.innerHTML = `
         <h3 style="margin-bottom: 15px; color: #333;">📊 總體學習進度</h3>
         <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 15px;">
             <div>
-                <span style="display: block; font-size: 24px; font-weight: bold; color: #4CAF50;">${progress.correctQuestions.length}/22</span>
+                <span style="display: block; font-size: 24px; font-weight: bold; color: #4CAF50;">${progress.correctQuestions.length}/${totalQuestions}</span>
                 <span style="font-size: 14px; color: #666;">已掌握題目</span>
             </div>
             <div>

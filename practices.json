@@ -1,225 +1,301 @@
 {
   "questionBank": [
     {
+      "id": 1,
       "shape": "square",
       "question": "正方形的四條邊都相等",
       "answer": true,
       "property": "equal",
       "explanation": "正方形的定義就是四條邊都相等且四個角都是直角的四邊形",
       "category": "sides",
-      "knowledgePoint": "正方形的邊長特性"
+      "knowledgePoint": "正方形的邊長特性",
+      "difficulty": "easy"
     },
     {
+      "id": 2,
       "shape": "square",
       "question": "正方形的四個角都是直角",
       "answer": true,
       "property": "right-angle",
-      "explanation": "正方形的所有角都是90度，這是正方形的基本特徵之一",
+      "explanation": "正方形的所有內角都是90度，這是正方形的基本特性",
       "category": "angles",
-      "knowledgePoint": "正方形的角度特性"
+      "knowledgePoint": "正方形的角度特性",
+      "difficulty": "easy"
     },
     {
+      "id": 3,
       "shape": "square",
       "question": "正方形的對角線相等且垂直",
       "answer": true,
       "property": "diagonal",
-      "explanation": "正方形的對角線不僅相等，還互相垂直平分",
+      "explanation": "正方形的兩條對角線長度相等，且互相垂直平分",
       "category": "diagonals",
-      "knowledgePoint": "正方形的對角線特性"
+      "knowledgePoint": "正方形的對角線特性",
+      "difficulty": "medium"
     },
     {
+      "id": 4,
       "shape": "rectangle",
       "question": "長方形的四條邊都相等",
       "answer": false,
       "property": "equal",
       "explanation": "長方形只有對邊相等，長邊和短邊的長度不同",
       "category": "sides",
-      "knowledgePoint": "長方形的邊長特性"
+      "knowledgePoint": "長方形的邊長特性",
+      "difficulty": "easy"
     },
     {
+      "id": 5,
       "shape": "rectangle",
       "question": "長方形的四個角都是直角",
       "answer": true,
       "property": "right-angle",
-      "explanation": "長方形的所有角都是90度",
+      "explanation": "長方形的所有內角都是90度",
       "category": "angles",
-      "knowledgePoint": "長方形的角度特性"
+      "knowledgePoint": "長方形的角度特性",
+      "difficulty": "easy"
     },
     {
-      "shape": "rectangle",
-      "question": "長方形的對邊平行",
-      "answer": true,
-      "property": "parallel",
-      "explanation": "長方形是特殊的平行四邊形，對邊一定平行",
-      "category": "parallel",
-      "knowledgePoint": "長方形的平行特性"
-    },
-    {
+      "id": 6,
       "shape": "rectangle",
       "question": "長方形的對角線相等",
       "answer": true,
       "property": "diagonal",
-      "explanation": "長方形的對角線長度相等，但不一定垂直",
+      "explanation": "長方形的兩條對角線長度相等，但不垂直",
       "category": "diagonals",
-      "knowledgePoint": "長方形的對角線特性"
+      "knowledgePoint": "長方形的對角線特性",
+      "difficulty": "medium"
     },
     {
+      "id": 7,
+      "shape": "rectangle",
+      "question": "長方形的對邊平行",
+      "answer": true,
+      "property": "parallel",
+      "explanation": "長方形是特殊的平行四邊形，對邊平行",
+      "category": "parallel",
+      "knowledgePoint": "長方形的平行特性",
+      "difficulty": "easy"
+    },
+    {
+      "id": 8,
       "shape": "rhombus",
       "question": "菱形的四條邊都相等",
       "answer": true,
       "property": "equal",
       "explanation": "菱形的定義就是四條邊都相等的平行四邊形",
       "category": "sides",
-      "knowledgePoint": "菱形的邊長特性"
+      "knowledgePoint": "菱形的邊長特性",
+      "difficulty": "easy"
     },
     {
+      "id": 9,
       "shape": "rhombus",
       "question": "菱形的四個角都是直角",
       "answer": false,
       "property": "general-angle",
-      "explanation": "菱形的對角相等，但不一定都是直角",
+      "explanation": "菱形的對角相等，但不一定是直角。只有正方形的菱形才有直角",
       "category": "angles",
-      "knowledgePoint": "菱形的角度特性"
+      "knowledgePoint": "菱形的角度特性",
+      "difficulty": "medium"
     },
     {
+      "id": 10,
       "shape": "rhombus",
-      "question": "菱形的對角線垂直",
+      "question": "菱形的對角線垂直且互相平分",
       "answer": true,
       "property": "diagonal",
-      "explanation": "菱形的對角線互相垂直平分，這是菱形的重要特性",
+      "explanation": "菱形的對角線互相垂直平分，但長度不一定相等",
       "category": "diagonals",
-      "knowledgePoint": "菱形的對角線特性"
+      "knowledgePoint": "菱形的對角線特性",
+      "difficulty": "medium"
     },
     {
+      "id": 11,
+      "shape": "rhombus",
+      "question": "菱形的對邊平行",
+      "answer": true,
+      "property": "parallel",
+      "explanation": "菱形是特殊的平行四邊形，對邊平行",
+      "category": "parallel",
+      "knowledgePoint": "菱形的平行特性",
+      "difficulty": "easy"
+    },
+    {
+      "id": 12,
+      "shape": "parallelogram",
+      "question": "平行四邊形的對邊相等",
+      "answer": true,
+      "property": "equal",
+      "explanation": "平行四邊形的對邊長度相等",
+      "category": "sides",
+      "knowledgePoint": "平行四邊形的邊長特性",
+      "difficulty": "easy"
+    },
+    {
+      "id": 13,
+      "shape": "parallelogram",
+      "question": "平行四邊形的對角相等",
+      "answer": true,
+      "property": "general-angle",
+      "explanation": "平行四邊形的對角相等，但鄰角互補",
+      "category": "angles",
+      "knowledgePoint": "平行四邊形的角度特性",
+      "difficulty": "medium"
+    },
+    {
+      "id": 14,
       "shape": "parallelogram",
       "question": "平行四邊形的對邊平行",
       "answer": true,
       "property": "parallel",
       "explanation": "平行四邊形的定義就是兩組對邊分別平行的四邊形",
       "category": "parallel",
-      "knowledgePoint": "平行四邊形的平行特性"
+      "knowledgePoint": "平行四邊形的平行特性",
+      "difficulty": "easy"
     },
     {
+      "id": 15,
       "shape": "parallelogram",
-      "question": "平行四邊形的對邊相等",
+      "question": "平行四邊形的對角線互相平分",
       "answer": true,
-      "property": "equal",
-      "explanation": "平行四邊形的對邊不僅平行，而且長度相等",
-      "category": "sides",
-      "knowledgePoint": "平行四邊形的邊長特性"
-    },
-    {
-      "shape": "parallelogram",
-      "question": "平行四邊形的對角相等",
-      "answer": true,
-      "property": "general-angle",
-      "explanation": "平行四邊形的對角相等，相鄰角互補",
-      "category": "angles",
-      "knowledgePoint": "平行四邊形的角度特性"
-    },
-    {
-      "shape": "parallelogram",
-      "question": "平行四邊形的對角線相等",
-      "answer": false,
       "property": "diagonal",
-      "explanation": "平行四邊形的對角線互相平分，但長度不一定相等",
+      "explanation": "平行四邊形的對角線互相平分，但不一定相等或垂直",
       "category": "diagonals",
-      "knowledgePoint": "平行四邊形的對角線特性"
+      "knowledgePoint": "平行四邊形的對角線特性",
+      "difficulty": "medium"
     },
     {
+      "id": 16,
       "shape": "trapezoid",
       "question": "梯形有一組對邊平行",
       "answer": true,
       "property": "parallel",
       "explanation": "梯形的定義就是有且僅有一組對邊平行的四邊形",
       "category": "parallel",
-      "knowledgePoint": "梯形的平行特性"
+      "knowledgePoint": "梯形的平行特性",
+      "difficulty": "easy"
     },
     {
+      "id": 17,
       "shape": "trapezoid",
-      "question": "梯形的兩腰一定相等",
+      "question": "梯形的上底和下底長度相等",
       "answer": false,
-      "property": "equal-sides",
-      "explanation": "一般梯形的兩腰不一定相等，只有等腰梯形的兩腰才相等",
+      "property": "equal",
+      "explanation": "梯形的上底和下底是平行的，但長度通常不相等。如果相等就是平行四邊形了",
       "category": "sides",
-      "knowledgePoint": "梯形的邊長特性"
+      "knowledgePoint": "梯形的邊長特性",
+      "difficulty": "medium"
     },
     {
+      "id": 18,
       "shape": "trapezoid",
-      "question": "梯形的上底和下底平行",
+      "question": "等腰梯形的兩腰相等",
       "answer": true,
-      "property": "parallel",
-      "explanation": "梯形有一組對邊（上底和下底）平行，這是梯形的基本特徵",
-      "category": "parallel",
-      "knowledgePoint": "梯形的平行特性"
+      "property": "equal-sides",
+      "explanation": "等腰梯形是特殊的梯形，兩條腰（非平行邊）長度相等",
+      "category": "sides",
+      "knowledgePoint": "等腰梯形的特性",
+      "difficulty": "medium"
     },
     {
+      "id": 19,
       "shape": "square",
-      "question": "正方形是特殊的長方形",
+      "question": "正方形既是長方形又是菱形",
       "answer": true,
       "property": "equal",
-      "explanation": "正方形具有長方形的所有特性（四個直角），同時四邊相等",
-      "category": "sides",
-      "knowledgePoint": "四邊形之間的關係"
+      "explanation": "正方形具有長方形（四個直角）和菱形（四邊相等）的所有特性",
+      "category": "relationship",
+      "knowledgePoint": "正方形與其他四邊形的關係",
+      "difficulty": "hard"
     },
     {
-      "shape": "square",
-      "question": "正方形是特殊的菱形",
+      "id": 20,
+      "shape": "rectangle",
+      "question": "長方形是特殊的平行四邊形",
       "answer": true,
       "property": "right-angle",
-      "explanation": "正方形具有菱形的所有特性（四邊相等），同時四角都是直角",
-      "category": "angles",
-      "knowledgePoint": "四邊形之間的關係"
+      "explanation": "長方形具有平行四邊形的所有特性，並且四個角都是直角",
+      "category": "relationship",
+      "knowledgePoint": "長方形與平行四邊形的關係",
+      "difficulty": "medium"
     },
     {
-      "shape": "rectangle",
-      "question": "所有長方形都是平行四邊形",
-      "answer": true,
-      "property": "parallel",
-      "explanation": "長方形具有平行四邊形的所有特性：對邊平行且相等",
-      "category": "parallel",
-      "knowledgePoint": "四邊形之間的關係"
-    },
-    {
+      "id": 21,
       "shape": "rhombus",
-      "question": "所有菱形都是平行四邊形",
+      "question": "菱形是特殊的平行四邊形",
       "answer": true,
-      "property": "parallel",
-      "explanation": "菱形具有平行四邊形的所有特性：對邊平行且相等",
-      "category": "parallel",
-      "knowledgePoint": "四邊形之間的關係"
+      "property": "equal",
+      "explanation": "菱形具有平行四邊形的所有特性，並且四條邊都相等",
+      "category": "relationship",
+      "knowledgePoint": "菱形與平行四邊形的關係",
+      "difficulty": "medium"
     },
     {
+      "id": 22,
       "shape": "parallelogram",
-      "question": "所有平行四邊形都是梯形",
+      "question": "平行四邊形是特殊的梯形",
       "answer": true,
       "property": "parallel",
-      "explanation": "平行四邊形有兩組對邊平行，滿足梯形「至少一組對邊平行」的條件",
-      "category": "parallel",
-      "knowledgePoint": "四邊形之間的關係"
+      "explanation": "平行四邊形有兩組對邊平行，可以看作是梯形的特殊情況（兩組對邊都平行）",
+      "category": "relationship",
+      "knowledgePoint": "平行四邊形與梯形的關係",
+      "difficulty": "hard"
+    }
+  ],
+  "categories": [
+    {
+      "id": "sides",
+      "name": "邊長特性",
+      "description": "關於四邊形邊長的性質",
+      "icon": "📏"
+    },
+    {
+      "id": "angles",
+      "name": "角度特性",
+      "description": "關於四邊形角度的性質",
+      "icon": "📐"
+    },
+    {
+      "id": "parallel",
+      "name": "平行特性",
+      "description": "關於四邊形平行線的性質",
+      "icon": "📄"
+    },
+    {
+      "id": "diagonals",
+      "name": "對角線特性",
+      "description": "關於四邊形對角線的性質",
+      "icon": "📐"
+    },
+    {
+      "id": "relationship",
+      "name": "圖形關係",
+      "description": "四邊形之間的包含和繼承關係",
+      "icon": "🔗"
     }
   ],
   "difficulty": [
     {
-      "level": "basic",
-      "name": "基礎",
-      "description": "基本定義和簡單特性"
+      "level": "easy",
+      "name": "容易",
+      "description": "基礎概念和定義"
     },
     {
-      "level": "intermediate", 
-      "name": "中級",
-      "description": "特性之間的比較和關係"
+      "level": "medium",
+      "name": "中等",
+      "description": "需要理解和應用的概念"
     },
     {
-      "level": "advanced",
-      "name": "進階", 
-      "description": "計算和複雜幾何關係"
+      "level": "hard",
+      "name": "困難",
+      "description": "需要綜合思考的複雜概念"
     }
   ],
   "metadata": {
     "version": "1.0",
     "totalQuestions": 22,
-    "description": "四邊形知識練習題庫",
-    "lastUpdated": "2025-06-03"
+    "lastUpdated": "2025-06-03",
+    "description": "四邊形知識挑戰題目數據庫"
   }
 }
