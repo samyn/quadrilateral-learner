@@ -197,100 +197,6 @@
       "explanation": "平行四邊形有兩組對邊平行，滿足梯形「至少一組對邊平行」的條件",
       "category": "parallel",
       "knowledgePoint": "四邊形之間的關係"
-    },
-    {
-      "shape": "square",
-      "question": "正方形的周長等於邊長乘以4",
-      "answer": true,
-      "property": "equal",
-      "explanation": "由於正方形四邊相等，周長 = 4 × 邊長",
-      "category": "sides",
-      "knowledgePoint": "正方形的計算"
-    },
-    {
-      "shape": "rectangle",
-      "question": "長方形的面積等於長乘以寬",
-      "answer": true,
-      "property": "equal",
-      "explanation": "長方形面積計算公式：面積 = 長 × 寬",
-      "category": "sides",
-      "knowledgePoint": "長方形的計算"
-    },
-    {
-      "shape": "rhombus",
-      "question": "菱形的面積可以用對角線長度計算",
-      "answer": true,
-      "property": "diagonal",
-      "explanation": "菱形面積 = (對角線1 × 對角線2) ÷ 2",
-      "category": "diagonals",
-      "knowledgePoint": "菱形的計算"
-    },
-    {
-      "shape": "trapezoid",
-      "question": "梯形的面積等於上底加下底乘以高除以2",
-      "answer": true,
-      "property": "parallel",
-      "explanation": "梯形面積 = (上底 + 下底) × 高 ÷ 2",
-      "category": "parallel",
-      "knowledgePoint": "梯形的計算"
-    },
-    {
-      "shape": "parallelogram",
-      "question": "平行四邊形的面積等於底乘以高",
-      "answer": true,
-      "property": "parallel",
-      "explanation": "平行四邊形面積 = 底 × 高（高是垂直距離）",
-      "category": "parallel",
-      "knowledgePoint": "平行四邊形的計算"
-    },
-    {
-      "shape": "square",
-      "question": "正方形的對角線長度等於邊長乘以√2",
-      "answer": true,
-      "property": "diagonal",
-      "explanation": "根據畢達哥拉斯定理，正方形對角線 = 邊長 × √2",
-      "category": "diagonals",
-      "knowledgePoint": "正方形的幾何關係"
-    },
-    {
-      "shape": "rectangle",
-      "question": "長方形有兩條對稱軸",
-      "answer": true,
-      "property": "equal",
-      "explanation": "長方形有兩條對稱軸：通過對邊中點的兩條直線",
-      "category": "sides",
-      "knowledgePoint": "長方形的對稱性"
-    },
-    {
-      "shape": "rhombus",
-      "question": "菱形有兩條對稱軸",
-      "answer": true,
-      "property": "diagonal",
-      "explanation": "菱形的兩條對角線就是它的對稱軸",
-      "category": "diagonals",
-      "knowledgePoint": "菱形的對稱性"
-    }
-  ],
-  "categories": [
-    {
-      "id": "sides",
-      "name": "邊長特性",
-      "description": "關於四邊形邊長的性質"
-    },
-    {
-      "id": "angles", 
-      "name": "角度特性",
-      "description": "關於四邊形角度的性質"
-    },
-    {
-      "id": "parallel",
-      "name": "平行特性", 
-      "description": "關於四邊形平行邊的性質"
-    },
-    {
-      "id": "diagonals",
-      "name": "對角線特性",
-      "description": "關於四邊形對角線的性質"
     }
   ],
   "difficulty": [
@@ -312,7 +218,7 @@
   ],
   "metadata": {
     "version": "1.0",
-    "totalQuestions": 30,
+    "totalQuestions": 22,
     "description": "四邊形知識練習題庫",
     "lastUpdated": "2025-06-03"
   }
