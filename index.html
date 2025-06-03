@@ -2889,7 +2889,7 @@
             wrongCount.textContent = challengeState.wrongQuestions.length;
         }
 
-        /**
+/**
          * 显示当前题目
          */
         function displayCurrentQuestion() {
@@ -2904,6 +2904,8 @@
             const shapeTitle = document.getElementById('challenge-shape-title');
             const answerFeedback = document.querySelector('.answer-feedback');
             const answerButtons = document.querySelectorAll('.answer-btn');
+            const shapeDisplay = document.querySelector('.question-shape-display');
+            const questionArea = document.querySelector('.question-area');
             
             questionText.textContent = question.question;
             shapeTitle.textContent = shapes[question.shape].title;
@@ -2917,15 +2919,17 @@
             
             challengeState.isAnswered = false;
             
-            // 显示对应的形状
+            // 直接隐藏图形显示区域并调整布局
+            shapeDisplay.classList.add('hidden');
+            questionArea.classList.add('shape-hidden');
+            
+            // 预先准备形状，但不显示
             displayChallengeShape(question.shape);
             
-            // 高亮对应的特性
-            if (question.property) {
-                setTimeout(() => {
-                    highlightChallengeVisualElement(question.property);
-                }, 500);
-            }
+            // 清除所有视觉高亮
+            document.querySelectorAll('#challenge-shape-svg .visual-element').forEach(el => {
+                el.classList.remove('highlight');
+            });
         }
 
         /**
