@@ -2797,7 +2797,7 @@
             if (btn) btn.classList.add('active');
         }
 
-        /**
+/**
          * 开始挑战模式
          */
         function startChallenge() {
@@ -2812,14 +2812,16 @@
             challengeContainer.style.display = 'block';
             challengeResultContainer.style.display = 'none';
             
-            // 更新按钮状态
+            // 隐藏其他所有按钮，只保留挑战按钮
             document.querySelectorAll('.shape-btn, .relationship-diagram-btn').forEach(btn => {
                 btn.classList.remove('active');
+                btn.style.display = 'none';
             });
             
             const challengeBtn = document.getElementById('challenge-btn');
             challengeBtn.classList.add('active');
             challengeBtn.textContent = '🔙 返回學習';
+            challengeBtn.style.display = 'block';
             
             // 初始化挑战状态
             initializeChallenge();
@@ -2840,7 +2842,12 @@
             challengeContainer.style.display = 'none';
             challengeResultContainer.style.display = 'none';
             
-            // 恢复按钮状态
+            // 恢复所有按钮的显示
+            document.querySelectorAll('.shape-btn, .relationship-diagram-btn').forEach(btn => {
+                btn.style.display = 'block';
+            });
+            
+            // 恢复挑战按钮状态
             const challengeBtn = document.getElementById('challenge-btn');
             challengeBtn.classList.remove('active');
             challengeBtn.textContent = '🎯 知識挑戰';
