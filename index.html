@@ -74,11 +74,10 @@
         }
 
         /* 关系图按钮样式 */
-        .relationship-diagram-btn {
+        .relationship-diagram-btn, .challenge-btn {
             padding: 12px 20px;
             border: none;
             border-radius: 25px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
             font-size: 16px;
             font-weight: bold;
@@ -87,12 +86,21 @@
             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
         }
 
-        .relationship-diagram-btn:hover {
+        .relationship-diagram-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .challenge-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .relationship-diagram-btn:hover, .challenge-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
-        .relationship-diagram-btn.active {
+        .relationship-diagram-btn.active, .challenge-btn.active {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
         }
 
@@ -546,6 +554,364 @@
             font-weight: bold;
         }
 
+        /* 挑战界面样式 */
+        .challenge-container, .challenge-result-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .challenge-header h2 {
+            color: #333;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .challenge-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #question-counter {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-display {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .score-display span {
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: #f0f8ff;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .back-to-home-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .back-to-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .question-area {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .question-shape-display {
+            flex: 0 0 300px;
+            text-align: center;
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .question-shape-display h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.4em;
+        }
+
+        .question-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .question-text h4 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .question-type {
+            color: #666;
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .answer-btn {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .true-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .false-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .answer-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .answer-feedback {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .feedback-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feedback-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .feedback-icon.correct::before {
+            content: '🎉';
+        }
+
+        .feedback-icon.wrong::before {
+            content: '😅';
+        }
+
+        .feedback-text {
+            text-align: center;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .next-question-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .next-question-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* 挑战结果界面样式 */
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .result-header h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .final-score {
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        #final-score-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .score-label {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .result-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .performance-summary h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .performance-stats {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .stat-item {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            display: block;
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .wrong-questions-review h3, .knowledge-points-summary h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .wrong-question-item {
+            background: #fff5f5;
+            border-left: 4px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .wrong-question-text {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .correct-answer {
+            color: #4CAF50;
+            font-size: 14px;
+        }
+
+        .knowledge-point-item {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-point-category {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+
+        .knowledge-point-details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .result-action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .result-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .shape-display {
@@ -604,10 +970,43 @@
                 gap: 10px;
             }
             
-            .relationship-diagram-btn {
-                order: -1; /* 在移动端将关系图按钮放到最前面 */
+            .relationship-diagram-btn, .challenge-btn {
+                order: -1; /* 在移动端将这些按钮放到最前面 */
                 font-size: 14px;
                 padding: 10px 16px;
+            }
+
+            /* 挑战界面响应式 */
+            .challenge-container, .challenge-result-container {
+                padding: 15px;
+            }
+
+            .question-area {
+                flex-direction: column;
+            }
+
+            .question-shape-display {
+                margin-bottom: 20px;
+            }
+
+            #challenge-shape-svg {
+                width: 150px;
+                height: 150px;
+            }
+
+            .answer-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .performance-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .result-actions {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -625,6 +1024,7 @@
         <button class="shape-btn" data-shape="parallelogram">平行四邊形</button>
         <button class="shape-btn" data-shape="trapezoid">梯形</button>
         <button class="relationship-diagram-btn" id="relationship-diagram-btn">圖形關係圖</button>
+        <button class="challenge-btn" id="challenge-btn">🎯 知識挑戰</button>
     </div>
 
     <div class="animation-container">
@@ -806,6 +1206,166 @@
         </div>
     </div>
 
+    <!-- 挑战答题界面 -->
+    <div class="challenge-container" style="display: none;">
+        <div class="challenge-header">
+            <h2>🎯 四邊形知識挑戰</h2>
+            <div class="challenge-progress">
+                <span id="question-counter">第 1 題 / 15 題</span>
+                <div class="score-display">
+                    <span>正確: <span id="correct-count">0</span></span>
+                    <span>錯誤: <span id="wrong-count">0</span></span>
+                </div>
+            </div>
+            <button class="back-to-home-btn" id="back-to-home-btn">🏠 返回首頁</button>
+        </div>
+
+        <div class="question-area">
+            <div class="question-shape-display">
+                <h3 id="challenge-shape-title">正方形</h3>
+                <svg id="challenge-shape-svg" width="200" height="200" viewBox="0 0 250 250">
+                    <polygon id="challenge-main-shape" points="" fill="#4CAF50" stroke="#333" stroke-width="3"/>
+                    
+                    <!-- 複製主SVG的所有視覺元素標記 -->
+                    <g id="challenge-parallel-marks" class="visual-element">
+                        <g class="parallel-mark" data-type="parallel">
+                            <line id="challenge-parallel1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-parallel1b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-parallel2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-parallel2b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <g id="challenge-angle-marks" class="visual-element">
+                        <g class="angle-mark" data-type="right-angle">
+                            <rect id="challenge-angle1" x="0" y="0" width="15" height="15" />
+                            <rect id="challenge-angle2" x="0" y="0" width="15" height="15" />
+                            <rect id="challenge-angle3" x="0" y="0" width="15" height="15" />
+                            <rect id="challenge-angle4" x="0" y="0" width="15" height="15" />
+                        </g>
+                    </g>
+                    
+                    <g id="challenge-angle-marks-general" class="visual-element">
+                        <g class="general-angle-mark" data-type="general-angle">
+                            <circle id="challenge-angle-dot1" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="challenge-angle-dot2" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="challenge-angle-dot3" cx="0" cy="0" r="0" fill="#FF9800" />
+                            <circle id="challenge-angle-dot4" cx="0" cy="0" r="0" fill="#FF9800" />
+                        </g>
+                    </g>
+                    
+                    <g id="challenge-equal-marks" class="visual-element">
+                        <g class="equal-mark" data-type="equal">
+                            <line id="challenge-equal1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal1b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal2b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal3a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal3b" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal4a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-equal4b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <g id="challenge-sides-marks" class="visual-element">
+                        <g class="equal-mark" data-type="equal-sides">
+                            <line id="challenge-side1a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-side2a" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-side2b" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                    
+                    <g id="challenge-diagonal-marks" class="visual-element">
+                        <g class="diagonal-line" data-type="diagonal">
+                            <line id="challenge-diagonal1" x1="0" y1="0" x2="0" y2="0" />
+                            <line id="challenge-diagonal2" x1="0" y1="0" x2="0" y2="0" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="question-content">
+                <div class="question-text">
+                    <h4 id="current-question">正方形的四條邊都相等</h4>
+                    <p class="question-type">這個敘述是否正確？</p>
+                </div>
+
+                <div class="answer-buttons">
+                    <button class="answer-btn true-btn" data-answer="true">
+                        ✓ 正確
+                    </button>
+                    <button class="answer-btn false-btn" data-answer="false">
+                        ✗ 錯誤
+                    </button>
+                </div>
+
+                <div class="answer-feedback" style="display: none;">
+                    <div class="feedback-content">
+                        <div class="feedback-icon"></div>
+                        <div class="feedback-text"></div>
+                        <button class="next-question-btn">下一題 →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 挑战结果界面 -->
+    <div class="challenge-result-container" style="display: none;">
+        <div class="result-header">
+            <h2>🎉 挑戰完成！</h2>
+            <div class="final-score">
+                <div class="score-circle">
+                    <span id="final-score-text">0/15</span>
+                    <div class="score-label">答對題數</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-content">
+            <div class="performance-summary">
+                <h3>成績分析</h3>
+                <div class="performance-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">正確率</span>
+                        <span class="stat-value" id="accuracy-rate">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">答對題數</span>
+                        <span class="stat-value" id="correct-total">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">答錯題數</span>
+                        <span class="stat-value" id="wrong-total">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrong-questions-review" id="wrong-questions-review" style="display: none;">
+                <h3>錯誤題目複習</h3>
+                <div class="wrong-questions-list" id="wrong-questions-list">
+                    <!-- 錯誤題目將在這裡動態添加 -->
+                </div>
+            </div>
+
+            <div class="knowledge-points-summary" id="knowledge-points-summary" style="display: none;">
+                <h3>需要加強的知識點</h3>
+                <div class="knowledge-points-list" id="knowledge-points-list">
+                    <!-- 知識點總結將在這裡動態添加 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button class="result-action-btn restart-btn" id="restart-challenge-btn">
+                🔄 重新挑戰
+            </button>
+            <button class="result-action-btn home-btn" id="result-home-btn">
+                🏠 返回首頁
+            </button>
+        </div>
+    </div>
+
     <script>
         // 四边形数据定义
         const shapes = {
@@ -939,6 +1499,7 @@
         let isAnimating = false;
         let isComparisonMode = false;
         let isRelationshipDiagramMode = false; // 新增：关系图模式标志
+        let isChallengeMode = false; // 新增：挑战模式标志
 
         // 动画相关变量
         let animationState = {
@@ -946,6 +1507,160 @@
             targetShape: null,
             isActive: false
         };
+
+        // 挑战模式相关变量
+        let challengeState = {
+            questions: [],
+            currentQuestionIndex: 0,
+            score: 0,
+            wrongQuestions: [],
+            totalQuestions: 0,
+            isAnswered: false
+        };
+
+        // 题目数据库
+        const questionBank = [
+            // 正方形相关题目
+            {
+                shape: 'square',
+                question: '正方形的四條邊都相等',
+                answer: true,
+                property: 'equal',
+                explanation: '正方形的定義就是四條邊都相等且四個角都是直角的四邊形',
+                category: 'sides',
+                knowledgePoint: '正方形的邊長特性'
+            },
+            {
+                shape: 'square',
+                question: '正方形的四個角都是直角',
+                answer: true,
+                property: 'right-angle',
+                explanation: '正方形的四個角都是90度的直角',
+                category: 'angles',
+                knowledgePoint: '正方形的角度特性'
+            },
+            {
+                shape: 'square',
+                question: '正方形的對角線相等且垂直',
+                answer: true,
+                property: 'diagonal',
+                explanation: '正方形的對角線不僅長度相等，還會互相垂直平分',
+                category: 'diagonals',
+                knowledgePoint: '正方形的對角線特性'
+            },
+            // 长方形相关题目
+            {
+                shape: 'rectangle',
+                question: '長方形的四條邊都相等',
+                answer: false,
+                property: 'equal',
+                explanation: '長方形只有對邊相等，長邊和短邊的長度不同',
+                category: 'sides',
+                knowledgePoint: '長方形的邊長特性'
+            },
+            {
+                shape: 'rectangle',
+                question: '長方形的四個角都是直角',
+                answer: true,
+                property: 'right-angle',
+                explanation: '長方形的所有角都是90度的直角',
+                category: 'angles',
+                knowledgePoint: '長方形的角度特性'
+            },
+            {
+                shape: 'rectangle',
+                question: '長方形的對角線相等',
+                answer: true,
+                property: 'diagonal',
+                explanation: '長方形的兩條對角線長度相等，但不一定垂直',
+                category: 'diagonals',
+                knowledgePoint: '長方形的對角線特性'
+            },
+            // 菱形相关题目
+            {
+                shape: 'rhombus',
+                question: '菱形的四條邊都相等',
+                answer: true,
+                property: 'equal',
+                explanation: '菱形的定義就是四條邊都相等的平行四邊形',
+                category: 'sides',
+                knowledgePoint: '菱形的邊長特性'
+            },
+            {
+                shape: 'rhombus',
+                question: '菱形的四個角都是直角',
+                answer: false,
+                property: 'general-angle',
+                explanation: '菱形的對角相等，但不一定是直角，只有正方形才有四個直角',
+                category: 'angles',
+                knowledgePoint: '菱形的角度特性'
+            },
+            {
+                shape: 'rhombus',
+                question: '菱形的對角線互相垂直',
+                answer: true,
+                property: 'diagonal',
+                explanation: '菱形的對角線互相垂直平分，這是菱形的重要特性',
+                category: 'diagonals',
+                knowledgePoint: '菱形的對角線特性'
+            },
+            // 平行四边形相关题目
+            {
+                shape: 'parallelogram',
+                question: '平行四邊形的對邊平行',
+                answer: true,
+                property: 'parallel',
+                explanation: '平行四邊形的定義就是兩組對邊分別平行的四邊形',
+                category: 'parallel',
+                knowledgePoint: '平行四邊形的平行特性'
+            },
+            {
+                shape: 'parallelogram',
+                question: '平行四邊形的四條邊都相等',
+                answer: false,
+                property: 'equal',
+                explanation: '平行四邊形只有對邊相等，不是四條邊都相等（除非是菱形）',
+                category: 'sides',
+                knowledgePoint: '平行四邊形的邊長特性'
+            },
+            {
+                shape: 'parallelogram',
+                question: '平行四邊形的對角線相等',
+                answer: false,
+                property: 'diagonal',
+                explanation: '平行四邊形的對角線互相平分，但不一定相等（除非是長方形）',
+                category: 'diagonals',
+                knowledgePoint: '平行四邊形的對角線特性'
+            },
+            // 梯形相关题目
+            {
+                shape: 'trapezoid',
+                question: '梯形有一組對邊平行',
+                answer: true,
+                property: 'parallel',
+                explanation: '梯形的定義就是有且僅有一組對邊平行的四邊形',
+                category: 'parallel',
+                knowledgePoint: '梯形的平行特性'
+            },
+            {
+                shape: 'trapezoid',
+                question: '梯形的兩組對邊都平行',
+                answer: false,
+                property: 'parallel',
+                explanation: '梯形只有一組對邊平行，如果兩組對邊都平行就是平行四邊形了',
+                category: 'parallel',
+                knowledgePoint: '梯形與平行四邊形的區別'
+            },
+            {
+                shape: 'trapezoid',
+                question: '梯形的上底和下底長度相等',
+                answer: false,
+                property: 'equal',
+                explanation: '梯形的上底和下底（平行的兩邊）長度通常不相等',
+                category: 'sides',
+                knowledgePoint: '梯形的邊長特性'
+            }
+        ];
 
         // 变换关系定义
         const transformationPaths = {
@@ -2082,6 +2797,558 @@
             if (btn) btn.classList.add('active');
         }
 
+        /**
+         * 开始挑战模式
+         */
+        function startChallenge() {
+            isChallengeMode = true;
+            
+            // 隐藏主界面，显示挑战界面
+            const animationContainer = document.querySelector('.animation-container');
+            const challengeContainer = document.querySelector('.challenge-container');
+            const challengeResultContainer = document.querySelector('.challenge-result-container');
+            
+            animationContainer.style.display = 'none';
+            challengeContainer.style.display = 'block';
+            challengeResultContainer.style.display = 'none';
+            
+            // 更新按钮状态
+            document.querySelectorAll('.shape-btn, .relationship-diagram-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const challengeBtn = document.getElementById('challenge-btn');
+            challengeBtn.classList.add('active');
+            challengeBtn.textContent = '🔙 返回學習';
+            
+            // 初始化挑战状态
+            initializeChallenge();
+        }
+
+        /**
+         * 退出挑战模式
+         */
+        function exitChallenge() {
+            isChallengeMode = false;
+            
+            // 显示主界面，隐藏挑战界面
+            const animationContainer = document.querySelector('.animation-container');
+            const challengeContainer = document.querySelector('.challenge-container');
+            const challengeResultContainer = document.querySelector('.challenge-result-container');
+            
+            animationContainer.style.display = 'block';
+            challengeContainer.style.display = 'none';
+            challengeResultContainer.style.display = 'none';
+            
+            // 恢复按钮状态
+            const challengeBtn = document.getElementById('challenge-btn');
+            challengeBtn.classList.remove('active');
+            challengeBtn.textContent = '🎯 知識挑戰';
+            
+            // 显示当前选中的形状
+            hideRelationshipDiagram();
+            handleShapeSelection(currentShape);
+        }
+
+        /**
+         * 初始化挑战
+         */
+        function initializeChallenge() {
+            // 重置挑战状态
+            challengeState = {
+                questions: [...questionBank].sort(() => Math.random() - 0.5), // 随机打乱题目顺序
+                currentQuestionIndex: 0,
+                score: 0,
+                wrongQuestions: [],
+                totalQuestions: questionBank.length,
+                isAnswered: false
+            };
+            
+            // 更新UI
+            updateChallengeProgress();
+            displayCurrentQuestion();
+        }
+
+        /**
+         * 更新挑战进度显示
+         */
+        function updateChallengeProgress() {
+            const questionCounter = document.getElementById('question-counter');
+            const correctCount = document.getElementById('correct-count');
+            const wrongCount = document.getElementById('wrong-count');
+            
+            questionCounter.textContent = `第 ${challengeState.currentQuestionIndex + 1} 題 / ${challengeState.totalQuestions} 題`;
+            correctCount.textContent = challengeState.score;
+            wrongCount.textContent = challengeState.wrongQuestions.length;
+        }
+
+        /**
+         * 显示当前题目
+         */
+        function displayCurrentQuestion() {
+            const question = challengeState.questions[challengeState.currentQuestionIndex];
+            if (!question) {
+                showChallengeResult();
+                return;
+            }
+            
+            // 更新题目显示
+            const questionText = document.getElementById('current-question');
+            const shapeTitle = document.getElementById('challenge-shape-title');
+            const answerFeedback = document.querySelector('.answer-feedback');
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            
+            questionText.textContent = question.question;
+            shapeTitle.textContent = shapes[question.shape].title;
+            answerFeedback.style.display = 'none';
+            
+            // 重置答题按钮
+            answerButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+            
+            challengeState.isAnswered = false;
+            
+            // 显示对应的形状
+            displayChallengeShape(question.shape);
+            
+            // 高亮对应的特性
+            if (question.property) {
+                setTimeout(() => {
+                    highlightChallengeVisualElement(question.property);
+                }, 500);
+            }
+        }
+
+        /**
+         * 显示挑战模式的形状
+         */
+        function displayChallengeShape(shapeName) {
+            const shape = shapes[shapeName];
+            if (!shape) return;
+            
+            const polygon = document.getElementById('challenge-main-shape');
+            polygon.setAttribute('points', shape.points);
+            
+            // 更新视觉标记（挑战模式）
+            updateChallengeVisualMarkers(shapeName);
+        }
+
+        /**
+         * 更新挑战模式的视觉标记
+         */
+        function updateChallengeVisualMarkers(shapeName) {
+            const shape = shapes[shapeName];
+            if (!shape || !shape.visualElements) return;
+            
+            const points = shape.points.split(' ').map(p => {
+                const [x, y] = p.split(',').map(Number);
+                return { x, y };
+            });
+
+            // 清除所有标记
+            document.querySelectorAll('#challenge-shape-svg .visual-element').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // 清除所有角度标记
+            for (let i = 1; i <= 4; i++) {
+                const angleDot = document.getElementById(`challenge-angle-dot${i}`);
+                if (angleDot) {
+                    angleDot.setAttribute('r', '0');
+                    angleDot.setAttribute('cx', '0');
+                    angleDot.setAttribute('cy', '0');
+                }
+            }
+
+            // 复制主要updateVisualMarkers函数的逻辑，但使用challenge前缀的元素
+            // 设置平行线标记
+            if (shape.visualElements.parallel && shape.visualElements.parallel.show) {
+                const parallelMarks = document.getElementById('challenge-parallel-marks');
+                parallelMarks.style.display = 'block';
+                
+                if (shapeName === 'trapezoid') {
+                    // 梯形只显示一组平行线
+                    const topMidX = (points[0].x + points[1].x) / 2;
+                    const topMidY = (points[0].y + points[1].y) / 2;
+                    const bottomMidX = (points[2].x + points[3].x) / 2;
+                    const bottomMidY = (points[2].y + points[3].y) / 2;
+                    
+                    const parallel1a = document.getElementById('challenge-parallel1a');
+                    const parallel1b = document.getElementById('challenge-parallel1b');
+                    if (parallel1a && parallel1b) {
+                        parallel1a.setAttribute('x1', topMidX - 8);
+                        parallel1a.setAttribute('y1', topMidY - 5);
+                        parallel1a.setAttribute('x2', topMidX + 8);
+                        parallel1a.setAttribute('y2', topMidY - 5);
+                        
+                        parallel1b.setAttribute('x1', bottomMidX - 8);
+                        parallel1b.setAttribute('y1', bottomMidY + 5);
+                        parallel1b.setAttribute('x2', bottomMidX + 8);
+                        parallel1b.setAttribute('y2', bottomMidY + 5);
+                    }
+                } else {
+                    // 其他形状显示两组平行线
+                    const topMidX = (points[0].x + points[1].x) / 2;
+                    const topMidY = (points[0].y + points[1].y) / 2;
+                    const bottomMidX = (points[2].x + points[3].x) / 2;
+                    const bottomMidY = (points[2].y + points[3].y) / 2;
+                    
+                    const parallel1a = document.getElementById('challenge-parallel1a');
+                    const parallel1b = document.getElementById('challenge-parallel1b');
+                    if (parallel1a && parallel1b) {
+                        parallel1a.setAttribute('x1', topMidX - 8);
+                        parallel1a.setAttribute('y1', topMidY - 5);
+                        parallel1a.setAttribute('x2', topMidX + 8);
+                        parallel1a.setAttribute('y2', topMidY - 5);
+                        
+                        parallel1b.setAttribute('x1', bottomMidX - 8);
+                        parallel1b.setAttribute('y1', bottomMidY + 5);
+                        parallel1b.setAttribute('x2', bottomMidX + 8);
+                        parallel1b.setAttribute('y2', bottomMidY + 5);
+                    }
+
+                    const leftMidX = (points[0].x + points[3].x) / 2;
+                    const leftMidY = (points[0].y + points[3].y) / 2;
+                    const rightMidX = (points[1].x + points[2].x) / 2;
+                    const rightMidY = (points[1].y + points[2].y) / 2;
+                    
+                    const parallel2a = document.getElementById('challenge-parallel2a');
+                    const parallel2b = document.getElementById('challenge-parallel2b');
+                    if (parallel2a && parallel2b) {
+                        parallel2a.setAttribute('x1', leftMidX - 5);
+                        parallel2a.setAttribute('y1', leftMidY - 8);
+                        parallel2a.setAttribute('x2', leftMidX - 5);
+                        parallel2a.setAttribute('y2', leftMidY + 8);
+                        
+                        parallel2b.setAttribute('x1', rightMidX + 5);
+                        parallel2b.setAttribute('y1', rightMidY - 8);
+                        parallel2b.setAttribute('x2', rightMidX + 5);
+                        parallel2b.setAttribute('y2', rightMidY + 8);
+                    }
+                }
+            }
+
+            // 设置直角标记
+            if (shape.visualElements.rightAngle && shape.visualElements.rightAngle.show) {
+                const angleMarks = document.getElementById('challenge-angle-marks');
+                angleMarks.style.display = 'block';
+                
+                for (let i = 0; i < 4; i++) {
+                    const angle = document.getElementById(`challenge-angle${i + 1}`);
+                    if (angle) {
+                        const corner = points[i];
+                        angle.setAttribute('x', corner.x - 7.5);
+                        angle.setAttribute('y', corner.y - 7.5);
+                    }
+                }
+            }
+
+            // 设置一般角度标记
+            if (shape.visualElements.generalAngle && shape.visualElements.generalAngle.show) {
+                const angleMarksGeneral = document.getElementById('challenge-angle-marks-general');
+                angleMarksGeneral.style.display = 'block';
+                
+                if (shapeName === 'rhombus') {
+                    // 菱形角度标记
+                    const corner0 = points[0];
+                    const corner1 = points[1];
+                    const corner2 = points[2];
+                    const corner3 = points[3];
+                    
+                    const dot1 = document.getElementById('challenge-angle-dot1');
+                    const dot3 = document.getElementById('challenge-angle-dot3');
+                    if (dot1 && dot3) {
+                        dot1.setAttribute('cx', corner0.x);
+                        dot1.setAttribute('cy', corner0.y);
+                        dot1.setAttribute('r', '3');
+                        
+                        dot3.setAttribute('cx', corner2.x);
+                        dot3.setAttribute('cy', corner2.y);
+                        dot3.setAttribute('r', '3');
+                    }
+                    
+                    const dot2 = document.getElementById('challenge-angle-dot2');
+                    const dot4 = document.getElementById('challenge-angle-dot4');
+                    if (dot2 && dot4) {
+                        dot2.setAttribute('cx', corner1.x);
+                        dot2.setAttribute('cy', corner1.y);
+                        dot2.setAttribute('r', '5');
+                        
+                        dot4.setAttribute('cx', corner3.x);
+                        dot4.setAttribute('cy', corner3.y);
+                        dot4.setAttribute('r', '5');
+                    }
+                    
+                } else if (shapeName === 'parallelogram') {
+                    // 平行四边形角度标记
+                    for (let i = 0; i < 4; i++) {
+                        const angleDot = document.getElementById(`challenge-angle-dot${i + 1}`);
+                        if (angleDot) {
+                            const corner = points[i];
+                            angleDot.setAttribute('cx', corner.x);
+                            angleDot.setAttribute('cy', corner.y);
+                            
+                            if (i === 0 || i === 2) {
+                                angleDot.setAttribute('r', '3');
+                            } else {
+                                angleDot.setAttribute('r', '5');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 设置相等边标记（简化版本）
+            if (shape.visualElements.equal && shape.visualElements.equal.show) {
+                const equalMarks = document.getElementById('challenge-equal-marks');
+                equalMarks.style.display = 'block';
+                
+                // 这里可以添加相等边标记的具体实现，类似主SVG的逻辑
+            }
+
+            // 设置对角线
+            if (shape.visualElements.diagonal && shape.visualElements.diagonal.show) {
+                const diagonalMarks = document.getElementById('challenge-diagonal-marks');
+                diagonalMarks.style.display = 'block';
+                
+                const diagonal1 = document.getElementById('challenge-diagonal1');
+                const diagonal2 = document.getElementById('challenge-diagonal2');
+                if (diagonal1 && diagonal2) {
+                    diagonal1.setAttribute('x1', points[0].x);
+                    diagonal1.setAttribute('y1', points[0].y);
+                    diagonal1.setAttribute('x2', points[2].x);
+                    diagonal1.setAttribute('y2', points[2].y);
+                    
+                    diagonal2.setAttribute('x1', points[1].x);
+                    diagonal2.setAttribute('y1', points[1].y);
+                    diagonal2.setAttribute('x2', points[3].x);
+                    diagonal2.setAttribute('y2', points[3].y);
+                }
+            }
+        }
+
+        /**
+         * 高亮挑战模式的视觉元素
+         */
+        function highlightChallengeVisualElement(visualType) {
+            document.querySelectorAll('#challenge-shape-svg .visual-element').forEach(el => {
+                el.classList.remove('highlight');
+            });
+
+            let targetElement = null;
+            switch(visualType) {
+                case 'parallel':
+                    targetElement = document.getElementById('challenge-parallel-marks');
+                    break;
+                case 'equal':
+                    targetElement = document.getElementById('challenge-equal-marks');
+                    break;
+                case 'equal-sides':
+                    targetElement = document.getElementById('challenge-sides-marks');
+                    break;
+                case 'right-angle':
+                    targetElement = document.getElementById('challenge-angle-marks');
+                    break;
+                case 'general-angle':
+                    targetElement = document.getElementById('challenge-angle-marks-general');
+                    break;
+                case 'diagonal':
+                    targetElement = document.getElementById('challenge-diagonal-marks');
+                    break;
+            }
+            
+            if (targetElement) {
+                targetElement.style.display = 'block';
+                targetElement.classList.add('highlight');
+            }
+        }
+
+        /**
+         * 处理答题
+         */
+        function handleAnswer(selectedAnswer) {
+            if (challengeState.isAnswered) return;
+            
+            challengeState.isAnswered = true;
+            const question = challengeState.questions[challengeState.currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.answer;
+            
+            // 禁用答题按钮
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+            
+            // 显示反馈
+            showAnswerFeedback(isCorrect, question);
+            
+            // 更新分数和错题记录
+            if (isCorrect) {
+                challengeState.score++;
+            } else {
+                challengeState.wrongQuestions.push({
+                    question: question,
+                    userAnswer: selectedAnswer,
+                    correctAnswer: question.answer,
+                    questionIndex: challengeState.currentQuestionIndex
+                });
+            }
+            
+            // 更新进度显示
+            updateChallengeProgress();
+        }
+
+        /**
+         * 显示答题反馈
+         */
+        function showAnswerFeedback(isCorrect, question) {
+            const answerFeedback = document.querySelector('.answer-feedback');
+            const feedbackIcon = document.querySelector('.feedback-icon');
+            const feedbackText = document.querySelector('.feedback-text');
+            const nextBtn = document.querySelector('.next-question-btn');
+            
+            answerFeedback.style.display = 'block';
+            
+            if (isCorrect) {
+                feedbackIcon.className = 'feedback-icon correct';
+                feedbackText.innerHTML = `
+                    <strong>✅ 答對了！</strong><br>
+                    ${question.explanation}
+                `;
+                feedbackIcon.style.color = '#4CAF50';
+            } else {
+                feedbackIcon.className = 'feedback-icon wrong';
+                feedbackText.innerHTML = `
+                    <strong>❌ 答錯了！</strong><br>
+                    正確答案：<strong>${question.answer ? '正確' : '錯誤'}</strong><br>
+                    ${question.explanation}
+                `;
+                feedbackIcon.style.color = '#ff6b6b';
+                
+                // 答错时高亮对应的特性
+                if (question.property) {
+                    highlightChallengeVisualElement(question.property);
+                }
+            }
+            
+            // 设置下一题按钮
+            if (challengeState.currentQuestionIndex < challengeState.totalQuestions - 1) {
+                nextBtn.textContent = '下一題 →';
+                nextBtn.onclick = nextQuestion;
+            } else {
+                nextBtn.textContent = '查看結果 →';
+                nextBtn.onclick = showChallengeResult;
+            }
+        }
+
+        /**
+         * 下一题
+         */
+        function nextQuestion() {
+            challengeState.currentQuestionIndex++;
+            displayCurrentQuestion();
+        }
+
+        /**
+         * 显示挑战结果
+         */
+        function showChallengeResult() {
+            const challengeContainer = document.querySelector('.challenge-container');
+            const challengeResultContainer = document.querySelector('.challenge-result-container');
+            
+            challengeContainer.style.display = 'none';
+            challengeResultContainer.style.display = 'block';
+            
+            // 更新结果显示
+            updateResultDisplay();
+        }
+
+        /**
+         * 更新结果显示
+         */
+        function updateResultDisplay() {
+            const finalScoreText = document.getElementById('final-score-text');
+            const accuracyRate = document.getElementById('accuracy-rate');
+            const correctTotal = document.getElementById('correct-total');
+            const wrongTotal = document.getElementById('wrong-total');
+            const wrongQuestionsReview = document.getElementById('wrong-questions-review');
+            const wrongQuestionsList = document.getElementById('wrong-questions-list');
+            const knowledgePointsSummary = document.getElementById('knowledge-points-summary');
+            const knowledgePointsList = document.getElementById('knowledge-points-list');
+            
+            // 基本统计
+            const accuracy = Math.round((challengeState.score / challengeState.totalQuestions) * 100);
+            finalScoreText.textContent = `${challengeState.score}/${challengeState.totalQuestions}`;
+            accuracyRate.textContent = `${accuracy}%`;
+            correctTotal.textContent = challengeState.score;
+            wrongTotal.textContent = challengeState.wrongQuestions.length;
+            
+            // 调整分数圆圈颜色
+            const scoreCircle = document.querySelector('.score-circle');
+            if (accuracy >= 80) {
+                scoreCircle.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            } else if (accuracy >= 60) {
+                scoreCircle.style.background = 'linear-gradient(135deg, #FF9800 0%, #F57C00 100%)';
+            } else {
+                scoreCircle.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
+            }
+            
+            // 错题复习
+            if (challengeState.wrongQuestions.length > 0) {
+                wrongQuestionsReview.style.display = 'block';
+                wrongQuestionsList.innerHTML = '';
+                
+                challengeState.wrongQuestions.forEach((wrongQ, index) => {
+                    const wrongItem = document.createElement('div');
+                    wrongItem.className = 'wrong-question-item';
+                    wrongItem.innerHTML = `
+                        <div class="wrong-question-text">
+                            第${wrongQ.questionIndex + 1}題：${wrongQ.question.question}
+                        </div>
+                        <div class="correct-answer">
+                            正確答案：${wrongQ.correctAnswer ? '正確' : '錯誤'} | 
+                            你的答案：${wrongQ.userAnswer ? '正確' : '錯誤'}
+                        </div>
+                    `;
+                    wrongQuestionsList.appendChild(wrongItem);
+                });
+                
+                // 知识点总结
+                const knowledgePoints = {};
+                challengeState.wrongQuestions.forEach(wrongQ => {
+                    const category = wrongQ.question.category;
+                    const knowledgePoint = wrongQ.question.knowledgePoint;
+                    
+                    if (!knowledgePoints[category]) {
+                        knowledgePoints[category] = new Set();
+                    }
+                    knowledgePoints[category].add(knowledgePoint);
+                });
+                
+                if (Object.keys(knowledgePoints).length > 0) {
+                    knowledgePointsSummary.style.display = 'block';
+                    knowledgePointsList.innerHTML = '';
+                    
+                    Object.entries(knowledgePoints).forEach(([category, points]) => {
+                        points.forEach(point => {
+                            const pointItem = document.createElement('div');
+                            pointItem.className = 'knowledge-point-item';
+                            pointItem.innerHTML = `
+                                <div class="knowledge-point-category">${point}</div>
+                                <div class="knowledge-point-details">建議複習 ${propertyCategories[category]?.name || category} 相關知識</div>
+                            `;
+                            knowledgePointsList.appendChild(pointItem);
+                        });
+                    });
+                }
+            } else {
+                wrongQuestionsReview.style.display = 'none';
+                knowledgePointsSummary.style.display = 'none';
+            }
+        }
+
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 形状按钮事件监听
@@ -2102,6 +3369,44 @@
                     // 当前在形状显示模式，切换到关系图
                     showRelationshipDiagram();
                 }
+            });
+
+            // 挑战按钮事件监听
+            document.getElementById('challenge-btn').addEventListener('click', () => {
+                if (isChallengeMode) {
+                    // 当前在挑战模式，返回主界面
+                    exitChallenge();
+                } else {
+                    // 当前在主界面，进入挑战模式
+                    startChallenge();
+                }
+            });
+
+            // 挑战界面事件监听
+            // 返回首页按钮
+            document.getElementById('back-to-home-btn').addEventListener('click', () => {
+                exitChallenge();
+            });
+
+            // 答题按钮
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const answer = e.target.dataset.answer === 'true';
+                    handleAnswer(answer);
+                });
+            });
+
+            // 结果界面按钮
+            document.getElementById('restart-challenge-btn').addEventListener('click', () => {
+                initializeChallenge();
+                const challengeContainer = document.querySelector('.challenge-container');
+                const challengeResultContainer = document.querySelector('.challenge-result-container');
+                challengeContainer.style.display = 'block';
+                challengeResultContainer.style.display = 'none';
+            });
+
+            document.getElementById('result-home-btn').addEventListener('click', () => {
+                exitChallenge();
             });
 
             // 关系图中图形区域的点击事件
