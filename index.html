@@ -635,24 +635,6 @@
             font-weight: bold;
         }
 
-        .back-to-home-btn {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-        }
-
-        .back-to-home-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
         .question-shape-display {
             flex: 0 0 300px;
             text-align: center;
@@ -1007,6 +989,7 @@
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
+                justify-content: center;
             }
 
             .question-area {
@@ -1245,7 +1228,6 @@
                     <span>錯誤: <span id="wrong-count">0</span></span>
                 </div>
             </div>
-            <button class="back-to-home-btn" id="back-to-home-btn">🏠 返回首頁</button>
         </div>
 
         <div class="question-area shape-hidden">
@@ -3474,11 +3456,6 @@
             });
 
             // 挑战界面事件监听
-            // 返回首页按钮
-            document.getElementById('back-to-home-btn').addEventListener('click', () => {
-                exitChallenge();
-            });
-
             // 答题按钮
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
