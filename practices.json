@@ -237,7 +237,7 @@
       "question": "平行四邊形是特殊的梯形",
       "answer": false,
       "property": "parallel",
-      "explanation": "平行四邊形有兩組對邊平行，可以看作是梯形的特殊情況（兩組對邊都平行）",
+      "explanation": "梯形是只有一組對邊平行的四邊形，而平行四邊形是兩組對邊都平行的四邊形",
       "category": "relationship",
       "knowledgePoint": "平行四邊形與梯形的關係",
       "difficulty": "hard"
