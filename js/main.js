@@ -93,6 +93,11 @@ class AppController {
             
             // 初始化显示
             if (window.ShapeModule && typeof window.ShapeModule.displayShape === 'function') {
+                // 确保在显示形状之前清空属性列表
+                const propertiesList = document.getElementById('properties-list');
+                if (propertiesList) {
+                    propertiesList.innerHTML = '';
+                }
                 window.ShapeModule.displayShape('square');
             }
             this.updateActiveShape('square');

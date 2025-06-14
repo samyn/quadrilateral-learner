@@ -89,8 +89,6 @@ class ImageViewerModule {
             const img = new Image();
             img.onload = () => {
                 this.updateImageDisplay();
-                // 切换到图片标签页
-                this.switchTab('image');
             };
             img.src = this.currentImages[0];
         } else {

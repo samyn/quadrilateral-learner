@@ -10,8 +10,8 @@ class ShapeModule {
      * 初始化模块
      */
     static init() {
-        // 初始化显示默认形状
-        this.displayShape('square');
+        // 初始化时不显示默认形状，由 AppController 统一管理
+        console.log('ShapeModule initialized');
     }
 
     /**
@@ -26,6 +26,12 @@ class ShapeModule {
         const polygon = document.getElementById('main-shape');
         const title = document.getElementById('shape-title');
         const propertiesList = document.getElementById('properties-list');
+
+        // 切换到图形标签页
+        const shapeTab = document.querySelector('.tab-btn[data-tab="shape"]');
+        if (shapeTab) {
+            shapeTab.click();
+        }
 
         polygon.classList.add('morphing');
         
@@ -68,6 +74,12 @@ class ShapeModule {
                 `;
                 
                 propertyDiv.addEventListener('click', () => {
+                    // 切换到图形标签页
+                    const shapeTab = document.querySelector('.tab-btn[data-tab="shape"]');
+                    if (shapeTab) {
+                        shapeTab.click();
+                    }
+
                     document.querySelectorAll('.property').forEach(p => {
                         p.classList.remove('highlight');
                     });
@@ -477,7 +489,7 @@ class ShapeModule {
         this.updateVisualMarkers(sourceShape);
         
         // 动画参数
-        const duration = window.AppData.CONFIG.ANIMATION_DURATION;
+        const duration = window.AppData.CONFIG?.ANIMATION_DURATION || 1000; // 默认1秒
         const steps = 60;
         const stepDuration = duration / steps;
         let currentStep = 0;

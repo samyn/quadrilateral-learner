@@ -96,6 +96,12 @@ class RelationshipModule {
             return;
         }
 
+        // 切换到图形标签页
+        const shapeTab = document.querySelector('.tab-btn[data-tab="shape"]');
+        if (shapeTab) {
+            shapeTab.click();
+        }
+
         const description = this.getTransformationDescription(sourceShape, targetShape);
         const relationshipInfo = document.querySelector('.relationship-info');
         const relationshipText = document.getElementById('relationship-text');
