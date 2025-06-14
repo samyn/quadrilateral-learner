@@ -5,6 +5,7 @@ from io import BytesIO
 import os
 import random
 import string
+import argparse
 
 def random_filename(length=12):
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
@@ -42,11 +43,14 @@ quadrilaterals = {
     ),
     "parallelogram": (
         "High-quality photograph of a real-world parallelogram shaped object. "
-        "Choose from: diagonal shadow of a window or door cast by slanted sunlight, "
+        "Choose from: complete diagonal shadow of a rectangular window cast on a wall "
+        "by slanted sunlight (showing ALL four corners of the shadow), "
         "side view of a slanted roof section, herringbone parquet floor tiles, "
         "slanted road sign, angled building facade, or skewed picture frame. "
         "The object should clearly show two pairs of parallel sides with "
-        "non-right angles. Natural lighting, clean background, sharp focus. "
+        "non-right angles. For window shadows, ensure the entire shadow is visible "
+        "with all four corners clearly defined to distinguish it from a trapezoid. "
+        "Natural lighting, clean background, sharp focus. "
         "The parallelogram shape should be obvious for elementary geometry education."
     ),
     "trapezoid": (
@@ -115,13 +119,13 @@ specific_objects = {
         "A diamond-shaped decorative mirror hanging on a wall"
     ],
     "parallelogram": [
-        "The diagonal shadow of a rectangular window cast on a white wall by afternoon sunlight",
+        "The complete diagonal shadow of a rectangular window cast on a white wall by afternoon sunlight, showing ALL four corners of the shadow clearly",
         "A side view of a slanted roof section against the sky, showing clear parallelogram outline",
         "Herringbone parquet floor tiles arranged in a parallelogram pattern, photographed from above",
         "A slanted rectangular road sign on an angled post, showing parallelogram shape",
         "The side facade of a modern building with slanted windows forming parallelograms",
         "A skewed picture frame hanging at an angle, creating parallelogram shape",
-        "The shadow of a door cast diagonally across a concrete floor"
+        "The complete shadow of a door cast diagonally across a concrete floor, showing all four corners"
     ],
     "trapezoid": [
         "Side view of concrete stairs showing clear trapezoid profile against a plain background",
@@ -166,78 +170,98 @@ square_categories = {
     ]
 }
 
-for shape, base_prompt in quadrilaterals.items():
-    try:
-        # 为正方形使用分类选择
-        if shape == "square":
-            # 随机选择一个分类
-            category = random.choice(list(square_categories.keys()))
-            category_objects = square_categories[category]
-            selected_object = random.choice(category_objects)
-            
-            category_names = {
-                "daily_life": "daily household item",
-                "packaging": "packaging or container",
-                "education": "educational or stationery item",
-                "architecture": "architectural or design element",
-                "technology": "technology or digital element",
-                "games": "game or entertainment item"
-            }
-            
-            specific_prompt = (
-                f"High-quality photograph of a real {selected_object} as a perfect example "
-                f"of a square shape. This {category_names[category]} should clearly show "
-                f"four equal sides and four right angles. Photographed straight-on with "
-                f"natural lighting, clean background, sharp focus. The square geometry "
-                f"must be obvious and perfect for elementary school students to identify "
-                f"and understand square characteristics."
-            )
-            
-            print(f"正在生成 {shape} 图片 (类别: {category_names[category]})...")
-            print(f"选择物体: {selected_object}")
-            
-        else:
-            # 其他形状使用原有逻辑
-            if shape in specific_objects:
-                specific_prompt = random.choice(specific_objects[shape])
-                specific_prompt += ". High-quality photography, natural lighting, clean composition, sharp focus. The {} shape should be clearly visible and perfect for elementary school geometry education.".format(shape)
+def generate_image(shape, count=1):
+    for i in range(count):
+        try:
+            # 为正方形使用分类选择
+            if shape == "square":
+                # 随机选择一个分类
+                category = random.choice(list(square_categories.keys()))
+                category_objects = square_categories[category]
+                selected_object = random.choice(category_objects)
+                
+                category_names = {
+                    "daily_life": "daily household item",
+                    "packaging": "packaging or container",
+                    "education": "educational or stationery item",
+                    "architecture": "architectural or design element",
+                    "technology": "technology or digital element",
+                    "games": "game or entertainment item"
+                }
+                
+                specific_prompt = (
+                    f"High-quality photograph of a real {selected_object} as a perfect example "
+                    f"of a square shape. This {category_names[category]} should clearly show "
+                    f"four equal sides and four right angles. Photographed straight-on with "
+                    f"natural lighting, clean background, sharp focus. The square geometry "
+                    f"must be obvious and perfect for elementary school students to identify "
+                    f"and understand square characteristics."
+                )
+                
+                print(f"正在生成第 {i+1}/{count} 张 {shape} 图片 (类别: {category_names[category]})...")
+                print(f"选择物体: {selected_object}")
+                
             else:
-                specific_prompt = base_prompt
-            
-            print(f"正在生成 {shape} 图片...")
-            
-        print(f"提示词: {specific_prompt[:100]}...")
-        
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-preview-image-generation",
-            contents=specific_prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=['TEXT', 'IMAGE']
-            )
-        )
-        
-        # 处理响应
-        for part in response.candidates[0].content.parts:
-            if part.text is not None:
-                print(f"Generated text for {shape}:", part.text)
-            elif part.inline_data is not None:
-                # 保存图片
-                image = Image.open(BytesIO(part.inline_data.data))
-                
-                # 为正方形添加分类信息到文件名
-                if shape == "square":
-                    filename = f"{shape}_{category}_{random_filename()}.png"
+                # 其他形状使用原有逻辑
+                if shape in specific_objects:
+                    specific_prompt = random.choice(specific_objects[shape])
+                    specific_prompt += ". High-quality photography, natural lighting, clean composition, sharp focus. The {} shape should be clearly visible and perfect for elementary school geometry education.".format(shape)
                 else:
-                    filename = f"{shape}_{random_filename()}.png"
-                    
-                out_path = f"real/{shape}/{filename}"
-                os.makedirs(os.path.dirname(out_path), exist_ok=True)
-                image.save(out_path)
-                print(f"✅ {shape} 图片已保存到 {out_path}")
+                    specific_prompt = quadrilaterals[shape]
                 
-    except Exception as e:
-        print(f"❌ 处理 {shape} 时发生错误：{str(e)}")
-        
+                print(f"正在生成第 {i+1}/{count} 张 {shape} 图片...")
+            
+            print(f"提示词: {specific_prompt[:100]}...")
+            
+            response = client.models.generate_content(
+                model="gemini-2.0-flash-preview-image-generation",
+                contents=specific_prompt,
+                config=types.GenerateContentConfig(
+                    response_modalities=['TEXT', 'IMAGE']
+                )
+            )
+            
+            # 处理响应
+            for part in response.candidates[0].content.parts:
+                if part.text is not None:
+                    print(f"Generated text for {shape}:", part.text)
+                elif part.inline_data is not None:
+                    # 保存图片
+                    image = Image.open(BytesIO(part.inline_data.data))
+                    
+                    # 为正方形添加分类信息到文件名
+                    if shape == "square":
+                        filename = f"{shape}_{category}_{random_filename()}.png"
+                    else:
+                        filename = f"{shape}_{random_filename()}.png"
+                        
+                    out_path = f"real/{shape}/{filename}"
+                    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                    image.save(out_path)
+                    print(f"✅ {shape} 图片已保存到 {out_path}")
+                    
+        except Exception as e:
+            print(f"❌ 处理 {shape} 时发生错误：{str(e)}")
+
+def main():
+    parser = argparse.ArgumentParser(description='生成四边形图片')
+    parser.add_argument('--shape', type=str, choices=['square', 'rectangle', 'rhombus', 'parallelogram', 'trapezoid'],
+                      help='要生成的图形类型')
+    parser.add_argument('--count', type=int, default=1,
+                      help='要生成的图片数量（默认为1）')
+    
+    args = parser.parse_args()
+    
+    if args.shape:
+        print(f"开始生成 {args.shape} 图片，数量：{args.count}")
+        generate_image(args.shape, args.count)
+    else:
+        print("请指定要生成的图形类型，例如：--shape square --count 2")
+        print("可用的图形类型：square, rectangle, rhombus, parallelogram, trapezoid")
+
+if __name__ == "__main__":
+    main()
+
 print("🎉 所有图片生成完成！")
 print("\n📊 正方形物体分类统计：")
 for category, objects in square_categories.items():
