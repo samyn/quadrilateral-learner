@@ -1,5 +1,8 @@
 name: Azure Static Web Apps CI/CD
 
+with:
+  skip_app_build: true # 跳过应用构建过程
+
 on:
   push:
     branches:
