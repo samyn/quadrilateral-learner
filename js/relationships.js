@@ -2,6 +2,12 @@
 // =====================================================
 
 // 关系模块 - Class 版本
+
+if (window.RelationshipModule) {
+    console.warn('RelationshipModule already loaded, skipping...');
+} else {
+    // 原有代码...
+
 class RelationshipModule {
     /**
      * 初始化模块
@@ -28,11 +34,13 @@ class RelationshipModule {
         const relationshipSvg = document.getElementById('relationship-svg');
         const propertiesPanel = document.querySelector('.properties-panel');
         const relationshipNetwork = document.querySelector('.relationship-network');
+        const contentTabs = document.querySelector('.content-tabs');
         
         if (shapeSvg) shapeSvg.style.display = 'none';
         if (relationshipSvg) relationshipSvg.style.display = 'block';
         if (propertiesPanel) propertiesPanel.style.display = 'none';
         if (relationshipNetwork) relationshipNetwork.style.display = 'none';
+        if (contentTabs) contentTabs.style.display = 'none';
         
         // 更新按钮状态
         document.querySelectorAll('.shape-btn').forEach(btn => {
@@ -63,11 +71,13 @@ class RelationshipModule {
         const relationshipSvg = document.getElementById('relationship-svg');
         const propertiesPanel = document.querySelector('.properties-panel');
         const relationshipNetwork = document.querySelector('.relationship-network');
+        const contentTabs = document.querySelector('.content-tabs');
         
         if (shapeSvg) shapeSvg.style.display = 'block';
         if (relationshipSvg) relationshipSvg.style.display = 'none';
         if (propertiesPanel) propertiesPanel.style.display = 'block';
         if (relationshipNetwork) relationshipNetwork.style.display = 'block';
+        if (contentTabs) contentTabs.style.display = 'block';
         
         // 恢复按钮状态
         const diagramBtn = document.getElementById('relationship-diagram-btn');
@@ -444,3 +454,4 @@ console.log('Mounting RelationshipModule class to window...');
 window.RelationshipModule = RelationshipModule;
 console.log('RelationshipModule mounted:', window.RelationshipModule);
 console.log('RelationshipModule.init type:', typeof window.RelationshipModule.init);
+}

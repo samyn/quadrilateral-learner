@@ -26,7 +26,13 @@ window.AppState = {
 // 主应用控制器
 class AppController {
     constructor() {
+        // 防止重复实例化
+        if (window.AppControllerInstance) {
+            return window.AppControllerInstance;
+        }
         this.initialized = false;
+        this.isBinding = false;        
+        window.AppControllerInstance = this;        
         // 等待 DOM 加载完成后再初始化
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initializeModules());
@@ -106,6 +112,19 @@ class AppController {
      * 绑定所有事件监听器
      */
     bindEventListeners() {
+        if (this.isBinding) return;
+        this.isBinding = true;
+        
+        // 使用事件委托避免重复绑定
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('shape-btn')) {
+                e.preventDefault();
+                const shapeName = e.target.dataset.shape;
+                if (shapeName) {
+                    this.handleShapeSelection(shapeName);
+                }
+            }
+        });        
         // 形状按钮事件
         this.bindShapeButtons();
         
@@ -354,6 +373,9 @@ class AppController {
      * 处理形状选择
      */
     handleShapeSelection(shapeName) {
+        // 防止重复调用
+        if (this.currentShapeSelection === shapeName) return;
+        this.currentShapeSelection = shapeName;        
         // 如果当前在关系图模式，先切换回形状显示
         if (window.AppState.isRelationshipDiagramMode) {
             if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
@@ -369,6 +391,10 @@ class AppController {
             window.ShapeModule.displayShape(shapeName);
         }
         window.AppState.currentShape = shapeName;
+        // 重置选择标记
+        setTimeout(() => {
+            this.currentShapeSelection = null;
+        }, 500);        
     }
 
     /**
@@ -450,22 +476,186 @@ class AppController {
             );
         }
     }
+
+    static finishTransformationAnimation(interval, polygon, targetShape, sourceShape) {
+        clearInterval(interval);
+        
+        // 动画完成
+        polygon.setAttribute('points', window.AppData.SHAPES_DATA[targetShape].points);
+        polygon.classList.remove('transforming');
+        polygon.classList.add('animating');
+        
+        // 清除所有视觉标记
+        this.clearVisualHighlights();
+        this.updateVisualMarkers(targetShape);
+        
+        // 短暂显示目标形状后回到源图形
+        setTimeout(() => {
+            // 清除所有视觉标记
+            this.clearVisualHighlights();
+            polygon.setAttribute('points', window.AppData.SHAPES_DATA[sourceShape].points);
+            this.updateVisualMarkers(sourceShape);
+            
+            // 重置动画状态
+            window.AppState.isAnimating = false;
+            window.AppState.animationState.isActive = false;
+            window.AppState.animationState.sourceShape = null;
+            window.AppState.animationState.targetShape = null;
+            
+            polygon.classList.remove('animating');
+            
+            // 确保显示源图形的属性
+            const propertiesList = document.getElementById('properties-list');
+            if (propertiesList) {
+                propertiesList.innerHTML = '';
+                const shape = window.AppData.SHAPES_DATA[sourceShape];
+                if (shape && shape.properties) {
+                    shape.properties.forEach((prop, index) => {
+                        setTimeout(() => {
+                            const propertyDiv = document.createElement('div');
+                            propertyDiv.className = 'property';
+                            propertyDiv.style.transform = 'translateX(0)';
+                            propertyDiv.style.opacity = '1';
+                            propertyDiv.innerHTML = `
+                                <div class="property-icon ${prop.icon}"></div>
+                                <span>${prop.text}</span>
+                            `;
+                            
+                            propertyDiv.addEventListener('click', () => {
+                                document.querySelectorAll('.property').forEach(p => {
+                                    p.classList.remove('highlight');
+                                });
+                                
+                                propertyDiv.classList.add('highlight');
+                                
+                                if (prop.visual) {
+                                    this.highlightVisualElement(prop.visual);
+                                }
+                            });
+                            
+                            propertiesList.appendChild(propertyDiv);
+                        }, index * 200);
+                    });
+                }
+            }
+        }, 800);
+    }
+
+    static updateVisualMarkers(shapeName) {
+        const shape = window.AppData.SHAPES_DATA[shapeName];
+        if (!shape || !shape.visualElements) return;
+        
+        // 清除所有现有的视觉标记
+        document.querySelectorAll('.visual-element').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        // 清除所有角度标记
+        this.clearAngleMarkers();
+        
+        // 清除所有对角线标记
+        const diagonalMarks = document.getElementById('diagonal-marks');
+        if (diagonalMarks) {
+            diagonalMarks.style.display = 'none';
+        }
+        
+        const points = shape.points.split(' ').map(p => {
+            const [x, y] = p.split(',').map(Number);
+            return { x, y };
+        });
+
+        // 设置各种标记
+        this.setParallelMarkers(shapeName, points);
+        this.setAngleMarkers(shapeName, points);
+        this.setEqualMarkers(shapeName, points);
+        this.setDiagonalMarkers(shapeName, points);
+    }
+
+    static displayShape(shapeName) {
+        if (window.AppState.isAnimating) return;
+        
+        const shape = window.AppData.SHAPES_DATA[shapeName];
+        if (!shape) return;
+        
+        const polygon = document.getElementById('main-shape');
+        const title = document.getElementById('shape-title');
+        const propertiesList = document.getElementById('properties-list');
+
+        // 清除所有现有的属性
+        propertiesList.innerHTML = '';
+        
+        polygon.classList.add('morphing');
+        
+        setTimeout(() => {
+            polygon.setAttribute('points', shape.points);
+            polygon.classList.remove('morphing');
+            this.updateVisualMarkers(shapeName);
+        }, 200);
+
+        title.textContent = shape.title;
+        this.clearVisualHighlights();
+        
+        // 添加新的属性
+        shape.properties.forEach((prop, index) => {
+            setTimeout(() => {
+                const propertyDiv = document.createElement('div');
+                propertyDiv.className = 'property';
+                propertyDiv.style.transform = 'translateX(0)';
+                propertyDiv.style.opacity = '1';
+                propertyDiv.innerHTML = `
+                    <div class="property-icon ${prop.icon}"></div>
+                    <span>${prop.text}</span>
+                `;
+                
+                propertyDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.property').forEach(p => {
+                        p.classList.remove('highlight');
+                    });
+                    
+                    propertyDiv.classList.add('highlight');
+                    
+                    if (prop.visual) {
+                        this.highlightVisualElement(prop.visual);
+                    }
+                });
+                
+                propertiesList.appendChild(propertyDiv);
+            }, index * 200);
+        });
+        
+        window.AppState.currentShape = shapeName;
+        window.AppState.isComparisonMode = false;
+        
+        // 更新变换区域显示
+        this.updateTransformationArea(shapeName);
+
+        // 显示对应形状的图片
+        window.ImageViewerModule.showImages(shapeName);
+    }
 }
 
 // 创建全局应用实例
 window.App = new AppController();
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        await window.App.init();
-    } catch (error) {
-        console.error('应用启动失败:', error);
-        if (window.AppUtils && window.AppUtils.UIUtils) {
-            window.AppUtils.UIUtils.showErrorMessage('应用启动失败，请刷新页面重试');
+
+// 删除原来的代码，替换为：
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.AppAlreadyInitialized) {
+        return;
+    }
+    window.AppAlreadyInitialized = true;
+    
+    // 清理旧版本函数
+    ['displayShape', 'updateTransformationArea', 'handleShapeSelection'].forEach(funcName => {
+        if (window[funcName]) {
+            delete window[funcName];
         }
+    });
+    
+    if (!window.App) {
+        window.App = new AppController();
     }
 });
-
 // 导出应用控制器（如果使用ES6模块）
 // export { AppController };

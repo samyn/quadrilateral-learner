@@ -1,6 +1,8 @@
 // shapes.js - 形状显示和动画功能
 // =====================================================
-
+if (window.ShapeModule) {
+    console.warn('ShapeModule already loaded, skipping...');
+} else {
 // 形状模块
 class ShapeModule {
     
@@ -716,3 +718,4 @@ class ShapeModule {
 
 // 挂载到全局对象
 window.ShapeModule = ShapeModule;
+}
