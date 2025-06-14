@@ -26,12 +26,24 @@ window.AppState = {
 // 主应用控制器
 class AppController {
     constructor() {
-        this.init();
-        this.bindEvents();
+        // 等待 DOM 加载完成后再初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeModules());
+        } else {
+            this.initializeModules();
+        }
+    }
+
+    initializeModules() {
+        // 先初始化各个模块
         window.ShapeModule.init();
         window.RelationshipModule.init();
         window.ChallengeModule.init();
         window.ImageViewerModule.init();
+        
+        // 然后初始化应用
+        this.init();
+        this.bindEventListeners();
     }
 
     /**

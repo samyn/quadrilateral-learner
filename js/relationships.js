@@ -2,12 +2,22 @@
 // =====================================================
 
 // 关系模块
-class RelationshipModule {
-    
+const RelationshipModule = {
+    /**
+     * 初始化模块
+     */
+    init() {
+        // 初始化时隐藏关系图
+        const relationshipSvg = document.getElementById('relationship-svg');
+        if (relationshipSvg) {
+            relationshipSvg.style.display = 'none';
+        }
+    },
+
     /**
      * 显示关系图
      */
-    static showRelationshipDiagram() {
+    showRelationshipDiagram() {
         window.AppState.isRelationshipDiagramMode = true;
         
         // 隐藏形状显示SVG和属性面板
@@ -32,12 +42,12 @@ class RelationshipModule {
         
         // 重置其他状态
         window.ShapeModule.resetTransformationState();
-    }
+    },
 
     /**
      * 隐藏关系图，切换回形状显示
      */
-    static hideRelationshipDiagram() {
+    hideRelationshipDiagram() {
         window.AppState.isRelationshipDiagramMode = false;
         
         // 显示形状显示SVG和属性面板
@@ -55,12 +65,12 @@ class RelationshipModule {
         const diagramBtn = document.getElementById('relationship-diagram-btn');
         diagramBtn.classList.remove('active');
         diagramBtn.textContent = '圖形關係圖';
-    }
+    },
 
     /**
      * 处理形状变换
      */
-    static handleShapeTransformation(sourceShape, targetShape) {
+    handleShapeTransformation(sourceShape, targetShape) {
         const description = this.getTransformationDescription(sourceShape, targetShape);
         const relationshipInfo = document.querySelector('.relationship-info');
         const relationshipText = document.getElementById('relationship-text');
@@ -101,12 +111,12 @@ class RelationshipModule {
         
         // 直接播放动画
         window.ShapeModule.animateTransformation(sourceShape, targetShape);
-    }
+    },
 
     /**
      * 切换特性对比显示
      */
-    static toggleComparison(sourceShape, targetShape) {
+    toggleComparison(sourceShape, targetShape) {
         const comparisonBtn = document.getElementById('comparison-btn');
         
         if (window.AppState.isComparisonMode) {
@@ -120,12 +130,12 @@ class RelationshipModule {
             comparisonBtn.textContent = '📋 返回形狀詳情';
             window.AppState.isComparisonMode = true;
         }
-    }
+    },
 
     /**
      * 显示形状对比
      */
-    static displayShapeComparison(sourceShape, targetShape) {
+    displayShapeComparison(sourceShape, targetShape) {
         const title = document.getElementById('shape-title');
         const propertiesList = document.getElementById('properties-list');
         
@@ -164,12 +174,12 @@ class RelationshipModule {
                 );
             }, categoryIndex * 300);
         });
-    }
+    },
 
     /**
      * 创建对比块
      */
-    static createComparisonBlock(category, categoryInfo, sourceProp, targetProp, relationshipInfo, categoryIndex, propertiesList) {
+    createComparisonBlock(category, categoryInfo, sourceProp, targetProp, relationshipInfo, categoryIndex, propertiesList) {
         const comparisonResult = this.comparePropertyLevels(sourceProp, targetProp);
         
         const categoryBlock = document.createElement('div');
@@ -224,12 +234,12 @@ class RelationshipModule {
         this.addComparisonBlockInteraction(categoryBlock, targetProp);
         
         propertiesList.appendChild(categoryBlock);
-    }
+    },
 
     /**
      * 创建属性内容
      */
-    static createPropertyContent(prop, category) {
+    createPropertyContent(prop, category) {
         if (prop) {
             return `
                 <div style="display: flex; align-items: center;">
@@ -248,12 +258,12 @@ class RelationshipModule {
                 </div>
             `;
         }
-    }
+    },
 
     /**
      * 添加对比块交互
      */
-    static addComparisonBlockInteraction(categoryBlock, targetProp) {
+    addComparisonBlockInteraction(categoryBlock, targetProp) {
         categoryBlock.addEventListener('click', () => {
             document.querySelectorAll('.property-comparison').forEach(block => {
                 block.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
@@ -268,32 +278,32 @@ class RelationshipModule {
                 window.ShapeModule.highlightVisualElement(targetProp.visual);
             }
         });
-    }
+    },
 
     /**
      * 获取形状在特定类别中的特性
      */
-    static getShapePropertyInCategory(shapeName, category) {
+    getShapePropertyInCategory(shapeName, category) {
         const shape = window.AppData.SHAPES_DATA[shapeName];
         if (!shape) return null;
         
         return shape.properties.find(prop => prop.category === category) || null;
-    }
+    },
 
     /**
      * 获取特性的层次级别描述
      */
-    static getPropertyLevelInfo(category, level) {
+    getPropertyLevelInfo(category, level) {
         const categoryInfo = window.AppData.PROPERTY_CATEGORIES[category];
         if (!categoryInfo) return null;
         
         return categoryInfo.hierarchy.find(h => h.level === level) || null;
-    }
+    },
 
     /**
      * 比较两个特性的层次关系
      */
-    static comparePropertyLevels(sourceProp, targetProp) {
+    comparePropertyLevels(sourceProp, targetProp) {
         if (!sourceProp && !targetProp) {
             return { type: 'same', icon: '➖', color: '#999', description: '均無此特性' };
         }
@@ -324,12 +334,12 @@ class RelationshipModule {
         } else {
             return { type: 'downgrade', icon: '⬇️', color: '#FF6B6B', description: '特性降級' };
         }
-    }
+    },
 
     /**
      * 获取层次关系说明文本
      */
-    static getRelationshipInfo(sourceProp, targetProp, category) {
+    getRelationshipInfo(sourceProp, targetProp, category) {
         if (!sourceProp || !targetProp || sourceProp.level === targetProp.level) {
             return '';
         }
@@ -363,16 +373,16 @@ class RelationshipModule {
         }
         
         return '';
-    }
+    },
 
     /**
      * 获取变换描述
      */
-    static getTransformationDescription(sourceShape, targetShape) {
+    getTransformationDescription(sourceShape, targetShape) {
         const transformKey = `${sourceShape}-${targetShape}`;
         return window.AppData.TRANSFORMATION_PATHS[transformKey] || '無法直接變換，請選擇其他路徑';
     }
-}
+};
 
 // 挂载到全局对象
 window.RelationshipModule = RelationshipModule;

@@ -5,6 +5,17 @@
 class ChallengeModule {
     
     /**
+     * 初始化模块
+     */
+    static init() {
+        // 初始化时隐藏挑战界面
+        const challengeContainer = document.querySelector('.challenge-container');
+        if (challengeContainer) {
+            challengeContainer.style.display = 'none';
+        }
+    }
+
+    /**
      * 开始挑战模式
      */
     static async startChallenge() {
@@ -51,7 +62,9 @@ class ChallengeModule {
         
         // 显示当前选中的形状
         window.RelationshipModule.hideRelationshipDiagram();
-        window.App.handleShapeSelection(window.AppState.currentShape);
+        if (window.App && typeof window.App.handleShapeSelection === 'function') {
+            window.App.handleShapeSelection(window.AppState.currentShape);
+        }
     }
 
     /**

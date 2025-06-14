@@ -278,9 +278,10 @@ const DEFAULT_QUESTIONS = [
 
 // 或者挂载到全局对象（当前方式）
 window.AppData = {
-    CONFIG,
     SHAPES_DATA,
-    PROPERTY_CATEGORIES, 
+    PROPERTY_CATEGORIES,
     TRANSFORMATION_PATHS,
     DEFAULT_QUESTIONS
 };
+
+window.AppConfig = CONFIG;

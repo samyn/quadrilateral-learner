@@ -1,2 +1,5 @@
 sa.json
 sa-key.json
+node_modules/
+dev/
+.DS_Store

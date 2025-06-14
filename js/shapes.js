@@ -5,6 +5,14 @@
 class ShapeModule {
     
     /**
+     * 初始化模块
+     */
+    static init() {
+        // 初始化显示默认形状
+        this.displayShape('square');
+    }
+
+    /**
      * 显示指定形状
      */
     static displayShape(shapeName) {
