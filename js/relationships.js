@@ -1,23 +1,26 @@
 // relationships.js - 关系图和特性比较功能
 // =====================================================
 
-// 关系模块
-const RelationshipModule = {
+// 关系模块 - Class 版本
+class RelationshipModule {
     /**
      * 初始化模块
      */
-    init() {
+    static init() {
+        console.log('RelationshipModule class initializing...');
         // 初始化时隐藏关系图
         const relationshipSvg = document.getElementById('relationship-svg');
         if (relationshipSvg) {
             relationshipSvg.style.display = 'none';
         }
-    },
+        console.log('RelationshipModule class initialized');
+    }
 
     /**
      * 显示关系图
      */
-    showRelationshipDiagram() {
+    static showRelationshipDiagram() {
+        console.log('Showing relationship diagram');
         window.AppState.isRelationshipDiagramMode = true;
         
         // 隐藏形状显示SVG和属性面板
@@ -26,10 +29,10 @@ const RelationshipModule = {
         const propertiesPanel = document.querySelector('.properties-panel');
         const relationshipNetwork = document.querySelector('.relationship-network');
         
-        shapeSvg.style.display = 'none';
-        relationshipSvg.style.display = 'block';
-        propertiesPanel.style.display = 'none';
-        relationshipNetwork.style.display = 'none';
+        if (shapeSvg) shapeSvg.style.display = 'none';
+        if (relationshipSvg) relationshipSvg.style.display = 'block';
+        if (propertiesPanel) propertiesPanel.style.display = 'none';
+        if (relationshipNetwork) relationshipNetwork.style.display = 'none';
         
         // 更新按钮状态
         document.querySelectorAll('.shape-btn').forEach(btn => {
@@ -37,17 +40,22 @@ const RelationshipModule = {
         });
         
         const diagramBtn = document.getElementById('relationship-diagram-btn');
-        diagramBtn.classList.add('active');
-        diagramBtn.textContent = '🔙 返回形狀學習';
+        if (diagramBtn) {
+            diagramBtn.classList.add('active');
+            diagramBtn.textContent = '🔙 返回形狀學習';
+        }
         
         // 重置其他状态
-        window.ShapeModule.resetTransformationState();
-    },
+        if (window.ShapeModule && typeof window.ShapeModule.resetTransformationState === 'function') {
+            window.ShapeModule.resetTransformationState();
+        }
+    }
 
     /**
      * 隐藏关系图，切换回形状显示
      */
-    hideRelationshipDiagram() {
+    static hideRelationshipDiagram() {
+        console.log('Hiding relationship diagram');
         window.AppState.isRelationshipDiagramMode = false;
         
         // 显示形状显示SVG和属性面板
@@ -56,21 +64,28 @@ const RelationshipModule = {
         const propertiesPanel = document.querySelector('.properties-panel');
         const relationshipNetwork = document.querySelector('.relationship-network');
         
-        shapeSvg.style.display = 'block';
-        relationshipSvg.style.display = 'none';
-        propertiesPanel.style.display = 'block';
-        relationshipNetwork.style.display = 'block';
+        if (shapeSvg) shapeSvg.style.display = 'block';
+        if (relationshipSvg) relationshipSvg.style.display = 'none';
+        if (propertiesPanel) propertiesPanel.style.display = 'block';
+        if (relationshipNetwork) relationshipNetwork.style.display = 'block';
         
         // 恢复按钮状态
         const diagramBtn = document.getElementById('relationship-diagram-btn');
-        diagramBtn.classList.remove('active');
-        diagramBtn.textContent = '圖形關係圖';
-    },
+        if (diagramBtn) {
+            diagramBtn.classList.remove('active');
+            diagramBtn.textContent = '圖形關係圖';
+        }
+    }
 
     /**
      * 处理形状变换
      */
-    handleShapeTransformation(sourceShape, targetShape) {
+    static handleShapeTransformation(sourceShape, targetShape) {
+        if (!window.AppData || !window.AppData.SHAPES_DATA) {
+            console.error('AppData not available');
+            return;
+        }
+
         const description = this.getTransformationDescription(sourceShape, targetShape);
         const relationshipInfo = document.querySelector('.relationship-info');
         const relationshipText = document.getElementById('relationship-text');
@@ -78,7 +93,9 @@ const RelationshipModule = {
         
         // 如果当前处于对比模式，先切换回形状详情
         if (window.AppState.isComparisonMode) {
-            window.ShapeModule.displayShape(targetShape);
+            if (window.ShapeModule && typeof window.ShapeModule.displayShape === 'function') {
+                window.ShapeModule.displayShape(targetShape);
+            }
             window.AppState.isComparisonMode = false;
         }
         
@@ -99,54 +116,83 @@ const RelationshipModule = {
         }
         
         // 更新提示信息
-        relationshipInfo.classList.remove('hidden');
-        relationshipInfo.classList.add('transformation');
-        relationshipText.innerHTML = `
-            <strong>${window.AppData.SHAPES_DATA[sourceShape].title} → ${window.AppData.SHAPES_DATA[targetShape].title}</strong><br>
-            ${description}
-        `;
+        if (relationshipInfo) {
+            relationshipInfo.classList.remove('hidden');
+            relationshipInfo.classList.add('transformation');
+        }
+        
+        if (relationshipText) {
+            const sourceTitle = window.AppData.SHAPES_DATA[sourceShape] ? window.AppData.SHAPES_DATA[sourceShape].title : sourceShape;
+            const targetTitle = window.AppData.SHAPES_DATA[targetShape] ? window.AppData.SHAPES_DATA[targetShape].title : targetShape;
+            
+            relationshipText.innerHTML = `
+                <strong>${sourceTitle} → ${targetTitle}</strong><br>
+                ${description}
+            `;
+        }
         
         // 隐藏控制按钮，直接开始动画
-        animationControls.style.display = 'none';
+        if (animationControls) {
+            animationControls.style.display = 'none';
+        }
         
         // 直接播放动画
-        window.ShapeModule.animateTransformation(sourceShape, targetShape);
-    },
+        if (window.ShapeModule && typeof window.ShapeModule.animateTransformation === 'function') {
+            window.ShapeModule.animateTransformation(sourceShape, targetShape);
+        }
+    }
 
     /**
      * 切换特性对比显示
      */
-    toggleComparison(sourceShape, targetShape) {
+    static toggleComparison(sourceShape, targetShape) {
         const comparisonBtn = document.getElementById('comparison-btn');
         
         if (window.AppState.isComparisonMode) {
             // 当前是对比模式，切换回目标形状详情
-            window.ShapeModule.displayShape(sourceShape);
-            comparisonBtn.textContent = '📊 顯示特性對比';
+            if (window.ShapeModule && typeof window.ShapeModule.displayShape === 'function') {
+                window.ShapeModule.displayShape(sourceShape);
+            }
+            if (comparisonBtn) comparisonBtn.textContent = '📊 顯示特性對比';
             window.AppState.isComparisonMode = false;
         } else {
             // 当前是形状详情，切换到对比模式
             this.displayShapeComparison(sourceShape, targetShape);
-            comparisonBtn.textContent = '📋 返回形狀詳情';
+            if (comparisonBtn) comparisonBtn.textContent = '📋 返回形狀詳情';
             window.AppState.isComparisonMode = true;
         }
-    },
+    }
 
     /**
      * 显示形状对比
      */
-    displayShapeComparison(sourceShape, targetShape) {
+    static displayShapeComparison(sourceShape, targetShape) {
+        if (!window.AppData || !window.AppData.SHAPES_DATA) {
+            console.error('AppData not available for comparison');
+            return;
+        }
+
         const title = document.getElementById('shape-title');
         const propertiesList = document.getElementById('properties-list');
         
+        if (!title || !propertiesList) {
+            console.error('Required elements not found for comparison');
+            return;
+        }
+        
         // 更新标题显示变换关系
+        const sourceTitle = window.AppData.SHAPES_DATA[sourceShape] ? window.AppData.SHAPES_DATA[sourceShape].title : sourceShape;
+        const targetTitle = window.AppData.SHAPES_DATA[targetShape] ? window.AppData.SHAPES_DATA[targetShape].title : targetShape;
+        
         title.innerHTML = `
-            <span style="color: #FF6B6B;">${window.AppData.SHAPES_DATA[sourceShape].title}</span> 
+            <span style="color: #FF6B6B;">${sourceTitle}</span> 
             <span style="color: #666; font-size: 0.8em;">→</span> 
-            <span style="color: #4CAF50;">${window.AppData.SHAPES_DATA[targetShape].title}</span>
+            <span style="color: #4CAF50;">${targetTitle}</span>
         `;
         
-        window.ShapeModule.clearVisualHighlights();
+        if (window.ShapeModule && typeof window.ShapeModule.clearVisualHighlights === 'function') {
+            window.ShapeModule.clearVisualHighlights();
+        }
         
         // 创建对比内容
         propertiesList.innerHTML = '';
@@ -155,7 +201,7 @@ const RelationshipModule = {
         const categories = ['sides', 'angles', 'parallel', 'diagonals'];
         
         categories.forEach((category, categoryIndex) => {
-            const categoryInfo = window.AppData.PROPERTY_CATEGORIES[category];
+            const categoryInfo = window.AppData.PROPERTY_CATEGORIES ? window.AppData.PROPERTY_CATEGORIES[category] : null;
             if (!categoryInfo) return;
             
             const sourceProp = this.getShapePropertyInCategory(sourceShape, category);
@@ -174,12 +220,12 @@ const RelationshipModule = {
                 );
             }, categoryIndex * 300);
         });
-    },
+    }
 
     /**
      * 创建对比块
      */
-    createComparisonBlock(category, categoryInfo, sourceProp, targetProp, relationshipInfo, categoryIndex, propertiesList) {
+    static createComparisonBlock(category, categoryInfo, sourceProp, targetProp, relationshipInfo, categoryIndex, propertiesList) {
         const comparisonResult = this.comparePropertyLevels(sourceProp, targetProp);
         
         const categoryBlock = document.createElement('div');
@@ -234,19 +280,20 @@ const RelationshipModule = {
         this.addComparisonBlockInteraction(categoryBlock, targetProp);
         
         propertiesList.appendChild(categoryBlock);
-    },
+    }
 
     /**
      * 创建属性内容
      */
-    createPropertyContent(prop, category) {
+    static createPropertyContent(prop, category) {
         if (prop) {
+            const levelInfo = this.getPropertyLevelInfo(category, prop.level);
             return `
                 <div style="display: flex; align-items: center;">
                     <div>
                         <div style="font-size: 13px; font-weight: bold; color: #333;">${prop.text}</div>
                         <div style="font-size: 11px; color: #666; margin-top: 2px;">
-                            ${this.getPropertyLevelInfo(category, prop.level)?.description || ''}
+                            ${levelInfo ? levelInfo.description : ''}
                         </div>
                     </div>
                 </div>
@@ -258,12 +305,12 @@ const RelationshipModule = {
                 </div>
             `;
         }
-    },
+    }
 
     /**
      * 添加对比块交互
      */
-    addComparisonBlockInteraction(categoryBlock, targetProp) {
+    static addComparisonBlockInteraction(categoryBlock, targetProp) {
         categoryBlock.addEventListener('click', () => {
             document.querySelectorAll('.property-comparison').forEach(block => {
                 block.style.boxShadow = '0 3px 6px rgba(0,0,0,0.08)';
@@ -274,36 +321,40 @@ const RelationshipModule = {
             categoryBlock.style.transform = 'scale(1.02)';
             
             // 高亮对应的视觉元素
-            if (targetProp && targetProp.visual) {
+            if (targetProp && targetProp.visual && window.ShapeModule && typeof window.ShapeModule.highlightVisualElement === 'function') {
                 window.ShapeModule.highlightVisualElement(targetProp.visual);
             }
         });
-    },
+    }
 
     /**
      * 获取形状在特定类别中的特性
      */
-    getShapePropertyInCategory(shapeName, category) {
+    static getShapePropertyInCategory(shapeName, category) {
+        if (!window.AppData || !window.AppData.SHAPES_DATA) return null;
+        
         const shape = window.AppData.SHAPES_DATA[shapeName];
         if (!shape) return null;
         
         return shape.properties.find(prop => prop.category === category) || null;
-    },
+    }
 
     /**
      * 获取特性的层次级别描述
      */
-    getPropertyLevelInfo(category, level) {
+    static getPropertyLevelInfo(category, level) {
+        if (!window.AppData || !window.AppData.PROPERTY_CATEGORIES) return null;
+        
         const categoryInfo = window.AppData.PROPERTY_CATEGORIES[category];
         if (!categoryInfo) return null;
         
         return categoryInfo.hierarchy.find(h => h.level === level) || null;
-    },
+    }
 
     /**
      * 比较两个特性的层次关系
      */
-    comparePropertyLevels(sourceProp, targetProp) {
+    static comparePropertyLevels(sourceProp, targetProp) {
         if (!sourceProp && !targetProp) {
             return { type: 'same', icon: '➖', color: '#999', description: '均無此特性' };
         }
@@ -334,12 +385,12 @@ const RelationshipModule = {
         } else {
             return { type: 'downgrade', icon: '⬇️', color: '#FF6B6B', description: '特性降級' };
         }
-    },
+    }
 
     /**
      * 获取层次关系说明文本
      */
-    getRelationshipInfo(sourceProp, targetProp, category) {
+    static getRelationshipInfo(sourceProp, targetProp, category) {
         if (!sourceProp || !targetProp || sourceProp.level === targetProp.level) {
             return '';
         }
@@ -373,16 +424,23 @@ const RelationshipModule = {
         }
         
         return '';
-    },
+    }
 
     /**
      * 获取变换描述
      */
-    getTransformationDescription(sourceShape, targetShape) {
+    static getTransformationDescription(sourceShape, targetShape) {
+        if (!window.AppData || !window.AppData.TRANSFORMATION_PATHS) {
+            return '無法獲取變換描述';
+        }
+        
         const transformKey = `${sourceShape}-${targetShape}`;
         return window.AppData.TRANSFORMATION_PATHS[transformKey] || '無法直接變換，請選擇其他路徑';
     }
-};
+}
 
 // 挂载到全局对象
+console.log('Mounting RelationshipModule class to window...');
 window.RelationshipModule = RelationshipModule;
+console.log('RelationshipModule mounted:', window.RelationshipModule);
+console.log('RelationshipModule.init type:', typeof window.RelationshipModule.init);

@@ -26,6 +26,7 @@ window.AppState = {
 // 主应用控制器
 class AppController {
     constructor() {
+        this.initialized = false;
         // 等待 DOM 加载完成后再初始化
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initializeModules());
@@ -35,15 +36,39 @@ class AppController {
     }
 
     initializeModules() {
-        // 先初始化各个模块
-        window.ShapeModule.init();
-        window.RelationshipModule.init();
-        window.ChallengeModule.init();
-        window.ImageViewerModule.init();
+        console.log('Initializing modules...');
+        
+        // 检查模块是否存在并初始化
+        if (window.ShapeModule && typeof window.ShapeModule.init === 'function') {
+            window.ShapeModule.init();
+            console.log('ShapeModule initialized');
+        } else {
+            console.error('ShapeModule not available');
+        }
+        
+        if (window.RelationshipModule && typeof window.RelationshipModule.init === 'function') {
+            window.RelationshipModule.init();
+            console.log('RelationshipModule initialized');
+        } else {
+            console.error('RelationshipModule not available or init is not a function');
+        }
+        
+        if (window.ChallengeModule && typeof window.ChallengeModule.init === 'function') {
+            window.ChallengeModule.init();
+            console.log('ChallengeModule initialized');
+        } else {
+            console.error('ChallengeModule not available');
+        }
+        
+        if (window.ImageViewerModule && typeof window.ImageViewerModule.init === 'function') {
+            window.ImageViewerModule.init();
+            console.log('ImageViewerModule initialized');
+        } else {
+            console.error('ImageViewerModule not available');
+        }
         
         // 然后初始化应用
         this.init();
-        this.bindEventListeners();
     }
 
     /**
@@ -61,7 +86,9 @@ class AppController {
             this.bindEventListeners();
             
             // 初始化显示
-            window.ShapeModule.displayShape('square');
+            if (window.ShapeModule && typeof window.ShapeModule.displayShape === 'function') {
+                window.ShapeModule.displayShape('square');
+            }
             this.updateActiveShape('square');
             
             this.initialized = true;
@@ -69,7 +96,9 @@ class AppController {
             
         } catch (error) {
             console.error('应用初始化失败:', error);
-            window.AppUtils.UIUtils.showErrorMessage('应用初始化失败');
+            if (window.AppUtils && window.AppUtils.UIUtils) {
+                window.AppUtils.UIUtils.showErrorMessage('应用初始化失败');
+            }
         }
     }
 
@@ -115,14 +144,20 @@ class AppController {
      */
     bindRelationshipButton() {
         const relationshipBtn = document.getElementById('relationship-diagram-btn');
-        relationshipBtn.addEventListener('click', () => {
-            if (window.AppState.isRelationshipDiagramMode) {
-                window.RelationshipModule.hideRelationshipDiagram();
-                this.handleShapeSelection(window.AppState.currentShape);
-            } else {
-                window.RelationshipModule.showRelationshipDiagram();
-            }
-        });
+        if (relationshipBtn) {
+            relationshipBtn.addEventListener('click', () => {
+                if (window.AppState.isRelationshipDiagramMode) {
+                    if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                        window.RelationshipModule.hideRelationshipDiagram();
+                    }
+                    this.handleShapeSelection(window.AppState.currentShape);
+                } else {
+                    if (window.RelationshipModule && typeof window.RelationshipModule.showRelationshipDiagram === 'function') {
+                        window.RelationshipModule.showRelationshipDiagram();
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -130,13 +165,19 @@ class AppController {
      */
     bindChallengeButton() {
         const challengeBtn = document.getElementById('challenge-btn');
-        challengeBtn.addEventListener('click', async () => {
-            if (window.AppState.isChallengeMode) {
-                window.ChallengeModule.exitChallenge();
-            } else {
-                await window.ChallengeModule.startChallenge();
-            }
-        });
+        if (challengeBtn) {
+            challengeBtn.addEventListener('click', async () => {
+                if (window.AppState.isChallengeMode) {
+                    if (window.ChallengeModule && typeof window.ChallengeModule.exitChallenge === 'function') {
+                        window.ChallengeModule.exitChallenge();
+                    }
+                } else {
+                    if (window.ChallengeModule && typeof window.ChallengeModule.startChallenge === 'function') {
+                        await window.ChallengeModule.startChallenge();
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -147,7 +188,9 @@ class AppController {
         document.querySelectorAll('.answer-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const answer = e.target.dataset.answer === 'true';
-                window.ChallengeModule.handleAnswer(answer);
+                if (window.ChallengeModule && typeof window.ChallengeModule.handleAnswer === 'function') {
+                    window.ChallengeModule.handleAnswer(answer);
+                }
             });
         });
 
@@ -155,7 +198,9 @@ class AppController {
         const resetBtn = document.getElementById('reset-progress-btn');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
-                window.ChallengeModule.showResetConfirmationDialog();
+                if (window.ChallengeModule && typeof window.ChallengeModule.showResetConfirmationDialog === 'function') {
+                    window.ChallengeModule.showResetConfirmationDialog();
+                }
             });
         }
     }
@@ -168,7 +213,9 @@ class AppController {
         const restartBtn = document.getElementById('restart-challenge-btn');
         if (restartBtn) {
             restartBtn.addEventListener('click', () => {
-                window.ChallengeModule.restartChallenge();
+                if (window.ChallengeModule && typeof window.ChallengeModule.restartChallenge === 'function') {
+                    window.ChallengeModule.restartChallenge();
+                }
             });
         }
 
@@ -176,7 +223,9 @@ class AppController {
         const homeBtn = document.getElementById('result-home-btn');
         if (homeBtn) {
             homeBtn.addEventListener('click', () => {
-                window.ChallengeModule.exitChallenge();
+                if (window.ChallengeModule && typeof window.ChallengeModule.exitChallenge === 'function') {
+                    window.ChallengeModule.exitChallenge();
+                }
             });
         }
     }
@@ -190,8 +239,10 @@ class AppController {
             rect.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const shapeName = rect.getAttribute('data-shape');
-                if (shapeName && window.AppData.SHAPES_DATA[shapeName]) {
-                    window.RelationshipModule.hideRelationshipDiagram();
+                if (shapeName && window.AppData && window.AppData.SHAPES_DATA && window.AppData.SHAPES_DATA[shapeName]) {
+                    if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                        window.RelationshipModule.hideRelationshipDiagram();
+                    }
                     this.handleShapeSelection(shapeName);
                 }
             });
@@ -252,7 +303,9 @@ class AppController {
                 else if (textContent.includes('平行四邊形')) shapeName = 'parallelogram';
                 
                 if (shapeName) {
-                    window.RelationshipModule.hideRelationshipDiagram();
+                    if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                        window.RelationshipModule.hideRelationshipDiagram();
+                    }
                     this.handleShapeSelection(shapeName);
                 }
             });
@@ -272,7 +325,9 @@ class AppController {
                 !e.target.closest('.animation-controls') &&
                 !e.target.closest('.transformation-progress')) {
                 
-                window.ShapeModule.resetTransformationState();
+                if (window.ShapeModule && typeof window.ShapeModule.resetTransformationState === 'function') {
+                    window.ShapeModule.resetTransformationState();
+                }
                 
                 document.querySelectorAll('.property').forEach(p => {
                     p.classList.remove('highlight');
@@ -283,7 +338,9 @@ class AppController {
                     row.style.transform = 'scale(1)';
                 });
                 
-                window.ShapeModule.clearVisualHighlights();
+                if (window.ShapeModule && typeof window.ShapeModule.clearVisualHighlights === 'function') {
+                    window.ShapeModule.clearVisualHighlights();
+                }
             }
         });
 
@@ -299,12 +356,18 @@ class AppController {
     handleShapeSelection(shapeName) {
         // 如果当前在关系图模式，先切换回形状显示
         if (window.AppState.isRelationshipDiagramMode) {
-            window.RelationshipModule.hideRelationshipDiagram();
+            if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                window.RelationshipModule.hideRelationshipDiagram();
+            }
         }
         
-        window.ShapeModule.resetTransformationState();
+        if (window.ShapeModule && typeof window.ShapeModule.resetTransformationState === 'function') {
+            window.ShapeModule.resetTransformationState();
+        }
         this.updateActiveShape(shapeName);
-        window.ShapeModule.displayShape(shapeName);
+        if (window.ShapeModule && typeof window.ShapeModule.displayShape === 'function') {
+            window.ShapeModule.displayShape(shapeName);
+        }
         window.AppState.currentShape = shapeName;
     }
 
@@ -324,9 +387,13 @@ class AppController {
         // ESC键退出当前模式
         if (e.key === 'Escape') {
             if (window.AppState.isChallengeMode) {
-                window.ChallengeModule.exitChallenge();
+                if (window.ChallengeModule && typeof window.ChallengeModule.exitChallenge === 'function') {
+                    window.ChallengeModule.exitChallenge();
+                }
             } else if (window.AppState.isRelationshipDiagramMode) {
-                window.RelationshipModule.hideRelationshipDiagram();
+                if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                    window.RelationshipModule.hideRelationshipDiagram();
+                }
                 this.handleShapeSelection(window.AppState.currentShape);
             }
         }
@@ -348,10 +415,14 @@ class AppController {
         if (e.key === ' ' && !window.AppState.isChallengeMode) {
             e.preventDefault();
             if (window.AppState.isRelationshipDiagramMode) {
-                window.RelationshipModule.hideRelationshipDiagram();
+                if (window.RelationshipModule && typeof window.RelationshipModule.hideRelationshipDiagram === 'function') {
+                    window.RelationshipModule.hideRelationshipDiagram();
+                }
                 this.handleShapeSelection(window.AppState.currentShape);
             } else {
-                window.RelationshipModule.showRelationshipDiagram();
+                if (window.RelationshipModule && typeof window.RelationshipModule.showRelationshipDiagram === 'function') {
+                    window.RelationshipModule.showRelationshipDiagram();
+                }
             }
         }
     }
@@ -373,9 +444,11 @@ class AppController {
      */
     handleError(error, context = '') {
         console.error(`Error in ${context}:`, error);
-        window.AppUtils.UIUtils.showErrorMessage(
-            context ? `${context}發生錯誤` : '發生未知錯誤'
-        );
+        if (window.AppUtils && window.AppUtils.UIUtils) {
+            window.AppUtils.UIUtils.showErrorMessage(
+                context ? `${context}發生錯誤` : '發生未知錯誤'
+            );
+        }
     }
 }
 
@@ -388,7 +461,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         await window.App.init();
     } catch (error) {
         console.error('应用启动失败:', error);
-        window.AppUtils.UIUtils.showErrorMessage('应用启动失败，请刷新页面重试');
+        if (window.AppUtils && window.AppUtils.UIUtils) {
+            window.AppUtils.UIUtils.showErrorMessage('应用启动失败，请刷新页面重试');
+        }
     }
 });
 
