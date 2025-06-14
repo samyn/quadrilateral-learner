@@ -1,0 +1,11 @@
+- name: Build And Deploy
+  id: builddeploy
+  uses: Azure/static-web-apps-deploy@v1
+  with:
+    azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+    repo_token: ${{ secrets.GITHUB_TOKEN }}
+    action: "upload"
+    app_location: "/" # 应用代码位置
+    api_location: "" # API 代码位置（如无 API 则留空）
+    output_location: "" # 构建输出位置（静态项目留空）
+    skip_app_build: true # 跳过应用构建过程
