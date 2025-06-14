@@ -235,7 +235,7 @@
       "id": 22,
       "shape": "parallelogram",
       "question": "平行四邊形是特殊的梯形",
-      "answer": true,
+      "answer": false,
       "property": "parallel",
       "explanation": "平行四邊形有兩組對邊平行，可以看作是梯形的特殊情況（兩組對邊都平行）",
       "category": "relationship",
