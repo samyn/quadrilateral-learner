@@ -26,7 +26,12 @@ window.AppState = {
 // 主应用控制器
 class AppController {
     constructor() {
-        this.initialized = false;
+        this.init();
+        this.bindEvents();
+        window.ShapeModule.init();
+        window.RelationshipModule.init();
+        window.ChallengeModule.init();
+        window.ImageViewerModule.init();
     }
 
     /**

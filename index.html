@@ -91,6 +91,18 @@
                     </g>
                 </svg>
 
+                <!-- 图片浏览器 -->
+                <div id="image-viewer" class="image-viewer" style="display: none;">
+                    <div class="image-container">
+                        <img id="current-image" src="" alt="当前图片">
+                    </div>
+                    <div class="image-controls">
+                        <button id="prev-image" class="image-nav-btn">←</button>
+                        <span id="image-counter">1/1</span>
+                        <button id="next-image" class="image-nav-btn">→</button>
+                    </div>
+                </div>
+
                 <!-- 关系图SVG -->
                 <svg id="relationship-svg" width="700" height="450" viewBox="0 0 700 450" style="display: none;">
                     <!-- 定义渐变 -->
@@ -375,6 +387,7 @@
     <script src="js/shapes.js"></script>
     <script src="js/relationships.js"></script>
     <script src="js/challenge.js"></script>
+    <script src="js/image-viewer.js"></script>
     <script src="js/main.js"></script>
     <!-- 致我亲爱的女儿 Lois -->
     <footer class="dedication">

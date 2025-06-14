@@ -1407,3 +1407,59 @@ body {
         font-size: 11px;
     }
 }
+
+/* 图片浏览器样式 */
+.image-viewer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.image-container {
+    margin-bottom: 15px;
+}
+
+.image-container img {
+    max-width: 600px;
+    max-height: 400px;
+    object-fit: contain;
+}
+
+.image-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.image-nav-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.image-nav-btn:hover {
+    background: #45a049;
+}
+
+.image-nav-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#image-counter {
+    font-size: 14px;
+    color: #666;
+}

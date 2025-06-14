@@ -35,6 +35,9 @@ class ShapeModule {
         
         // 更新变换区域显示
         this.updateTransformationArea(shapeName);
+
+        // 显示对应形状的图片
+        window.ImageViewerModule.showImages(shapeName);
     }
 
     /**
